@@ -1,3 +1,3 @@
-# quanttools
+# quantstools
 
-The `quanttools` is a simple library to trade.
+The `quantstools` is a simple library to trade.
