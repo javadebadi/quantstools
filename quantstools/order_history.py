@@ -33,6 +33,27 @@ class OrderHistory(Order):
             type_=type_    
         )
 
+    @classmethod
+    def from_order(
+        cls,
+        id_: str,
+        order: Order,
+        mili_unixtime: int,
+        is_active: bool = True,
+        is_cancelled: bool = False,
+        ):
+        return OrderHistory(
+            id_=id_,
+            symbol=order.symbol,
+            amount=order.amount,
+            price=order.price,
+            side=order.side,
+            type_=order.type_,
+            mili_unixtime=mili_unixtime,
+            is_active=is_active,
+            is_cancelled=is_cancelled,
+            )
+
     @property
     def id_(self) -> str:
         return self._id_

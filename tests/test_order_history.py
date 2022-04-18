@@ -146,6 +146,22 @@ class TestOrderHistory:
             )
         assert o.get_value() == pytest.approx(0.015*0.12)
 
+    def test_from_order(self):
+        order = Order(
+            'ETH-BTC',
+            'BUY',
+            Price(0.12, 5, 4),
+            '0.15',
+            'LIMIT',
+        )
+        o = OrderHistory.from_order(
+            id_='a48ryx2wej62fx23wga3b',
+            order=order,
+            mili_unixtime=1594936134,
+        )
+        assert o.price == Price(0.12, 5, 4)
+        assert o.id_ == 'a48ryx2wej62fx23wga3b'
+
 
 
 class TestCaseOrderHistory(unittest.TestCase):
