@@ -68,6 +68,9 @@ class Order:
     def get_price(self) -> Price:
         return self.price.get_price()
 
+    def get_value(self) -> float:
+        return float(self.amount) * float(self.get_price())
+
     def to_dict(self, numeric=False) -> dict:
         d = {}
         d['symbol'] = self.symbol
