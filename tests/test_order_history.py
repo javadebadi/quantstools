@@ -191,6 +191,15 @@ class TestCaseOrderHistory(unittest.TestCase):
     def test_get_date_in_timezone(self):
         assert datetime(1970, 1, 1, 3, 30, 0) == self.o.get_date_in_timezone(tz='Asia/Tehran').replace(tzinfo=None)
 
+    def test_order(self):
+        assert self.o.order == Order(
+                symbol='ETH-BTC',
+                side='BUY',
+                price=Price(0.12, 5, 4),
+                amount='0.015',
+                type_='LIMIT',
+                )
+
 
 
         

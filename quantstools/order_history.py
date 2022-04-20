@@ -119,7 +119,7 @@ class OrderHistory(Order):
         elif how == 'round':
             return int(round(self.mili_unixtime / 1000, 0))
 
-    def get_utcdatetime(self):
+    def get_utcdatetime(self) -> datetime:
             return datetime.utcfromtimestamp(self.get_unixtime())
 
     def get_date_in_timezone(self, tz='America/Montreal'):
@@ -132,4 +132,24 @@ class OrderHistory(Order):
     def to_dict(self, numeric=False) -> dict:
         d = super().to_dict(numeric=numeric)
         d['id'] = self.id_
+        d['mili_unixtime'] = self.get_mili_unixtime()
+        d['unixtime'] = self.get_unixtime()
+        d['datetime'] = self.get_utcdatetime().isoformat()
         return d
+
+    @property
+    def order(self) -> Order:
+        return Order(
+            symbol=self.symbol,
+            side=self.side,
+            price=self.price,
+            amount=self.amount,
+            type_=self.type_
+            )
+
+    def __str__(self) -> str:
+        return f'{self.id_} | {self.side} | {self.amount} | {self.price}'
+
+    def __eq__(self, other) -> bool:
+        assert isinstance(other, OrderHistory)
+        return self.id_ == other.id_
