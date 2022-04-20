@@ -79,3 +79,11 @@ class TestOrder:
             type_='LIMIT',
             )
         assert o.get_value() == pytest.approx(0.015*0.12)
+        o = Order(
+            symbol='ETH-BTC',
+            side='SELL',
+            price=Price(0.12, 5, 4),
+            amount='0.015',
+            type_='LIMIT',
+            )
+        assert o.get_value() == pytest.approx(-0.015*0.12)
