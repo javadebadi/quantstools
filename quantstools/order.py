@@ -2,12 +2,13 @@
 """
 
 from .price import Price
+from .symbol import Symbol
 
 class Order:
 
     def __init__(
         self,
-        symbol: str,
+        symbol: Symbol,
         side: str,
         price: Price,
         amount: str,
@@ -21,12 +22,12 @@ class Order:
 
 
     @property
-    def symbol(self) -> str:
+    def symbol(self) -> Symbol:
         return self._symbol
 
     @symbol.setter
     def symbol(self, symbol: str) -> None:
-        assert type(symbol) == str
+        assert isinstance(symbol, Symbol)
         self._symbol = symbol
 
     @property
@@ -79,7 +80,7 @@ class Order:
 
     def to_dict(self, numeric=False) -> dict:
         d = {}
-        d['symbol'] = self.symbol
+        d['symbol'] = self.symbol.symbol
         d['side'] = self.side
         d['price'] = self.get_price()
         d['amount'] = self.amount
