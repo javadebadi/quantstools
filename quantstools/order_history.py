@@ -6,13 +6,14 @@ from pytz import utc
 from .price import Price
 from .order import Order
 from .exception import OrderCancelError
+from .symbol import Symbol
 
 class OrderHistory(Order):
 
     def __init__(
         self,
         id_,
-        symbol: str,
+        symbol: Symbol,
         side: str,
         price: Price,
         amount: str,
@@ -153,3 +154,6 @@ class OrderHistory(Order):
     def __eq__(self, other) -> bool:
         assert isinstance(other, OrderHistory)
         return self.id_ == other.id_
+
+    def __hash__(self) -> int:
+        return hash(self.id_)

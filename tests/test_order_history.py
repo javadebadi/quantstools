@@ -6,6 +6,7 @@ from quantstools.exception import OrderError, OrderCancelError
 from quantstools.order_history import OrderHistory
 from quantstools.order import Order
 from quantstools.price import Price
+from quantstools.symbol import Symbol
 
 
 class TestOrderHistory:
@@ -13,7 +14,7 @@ class TestOrderHistory:
     def test_normal_values_for_properties(self):
         o = OrderHistory(
             id_='awe6623f2366f2f2fs',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -31,7 +32,7 @@ class TestOrderHistory:
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_=15,
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -45,7 +46,7 @@ class TestOrderHistory:
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_='fweoino845fwef',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -59,7 +60,7 @@ class TestOrderHistory:
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_='fweoino845fwef',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -73,7 +74,7 @@ class TestOrderHistory:
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_='fweoino845fwef',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -86,7 +87,7 @@ class TestOrderHistory:
     def test_cancel_method_make_is_cancelled_true_and_is_active_false(self):
         o = OrderHistory(
             id_='fweoino845fwef',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -102,7 +103,7 @@ class TestOrderHistory:
     def test_cancel_metho_raises_error_when_is_active_is_false(self):
         o = OrderHistory(
             id_='fweoino845fwef',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -119,7 +120,7 @@ class TestOrderHistory:
     def test_deactivate(self):
         o = OrderHistory(
             id_='fweoino845fwef',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -135,7 +136,7 @@ class TestOrderHistory:
     def test_get_value(self):
         o = OrderHistory(
             id_='fweoino845fwef',
-            symbol='ETH-BTC',
+            symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
             amount='0.015',
@@ -148,7 +149,7 @@ class TestOrderHistory:
 
     def test_from_order(self):
         order = Order(
-            'ETH-BTC',
+            Symbol('ETH-BTC'),
             'BUY',
             Price(0.12, 5, 4),
             '0.15',
@@ -169,7 +170,7 @@ class TestCaseOrderHistory(unittest.TestCase):
     def setUp(self) -> None:
         self.o = OrderHistory(
                 id_='fweoino845fwef',
-                symbol='ETH-BTC',
+                symbol=Symbol('ETH-BTC'),
                 side='BUY',
                 price=Price(0.12, 5, 4),
                 amount='0.015',
@@ -193,12 +194,15 @@ class TestCaseOrderHistory(unittest.TestCase):
 
     def test_order(self):
         assert self.o.order == Order(
-                symbol='ETH-BTC',
+                symbol=Symbol('ETH-BTC'),
                 side='BUY',
                 price=Price(0.12, 5, 4),
                 amount='0.015',
                 type_='LIMIT',
                 )
+
+    def test_hash(self):
+        assert hash(self.o) == hash(self.o.id_)
 
 
 
