@@ -3,12 +3,13 @@
 
 from .order import Order
 from .price import Price
+from .symbol import Symbol
 
 class OrderCollection:
 
     def __init__(
         self,
-        symbol: str
+        symbol: Symbol
         ):
         self._orders = []
         self.symbol = symbol
@@ -50,3 +51,10 @@ class OrderCollection:
 
     def get_orders_list_of_dict(self, numeric=False) -> list:
         return [order.to_dict(numeric=numeric) for order in self._orders]
+
+    def __str__(self) -> str:
+        s = ""
+        for order in self._orders:
+            s += str(order) + "\n"
+        s = s.strip()
+        return s
