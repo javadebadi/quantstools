@@ -88,3 +88,12 @@ class Order:
             d['amount'] = float(d['amount'])
         d['type_'] = self.type_
         return d
+
+    def __eq__(self, other) -> bool:
+        if self.to_dict() == other.to_dict():
+            return True
+        else:
+            return False
+
+    def __str__(self) -> str:
+        return f'{self.amount} | {self.get_price()} | {self.get_value()}'
