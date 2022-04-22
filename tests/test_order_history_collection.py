@@ -2,6 +2,7 @@ import unittest
 import pytest
 from quantstools.order_history import OrderHistory
 from quantstools.price import Price
+from quantstools.amount import Amount
 from quantstools.order_history_collection import OrderHistoryCollection
 from quantstools.symbol import Symbol
 
@@ -20,7 +21,7 @@ class TestOrderHistoryCollection:
             symbol=Symbol('BTC-USDT'),
             side='BUY',
             price=Price(40000, 8, 2),
-            amount='1.0',
+            amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=True,
             is_cancelled=False,
@@ -40,7 +41,7 @@ class TestOrderHistoryCollection:
             symbol=Symbol('BTC-USDT'),
             side='BUY',
             price=Price(40000, 8, 2),
-            amount='1.0',
+            amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=False,
             is_cancelled=False,
@@ -60,7 +61,7 @@ class TestOrderHistoryCollection:
             symbol=Symbol('BTC-USDT'),
             side='BUY',
             price=Price(40000, 8, 2),
-            amount='1.0',
+            amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=False,
             is_cancelled=True,
@@ -80,7 +81,7 @@ class TestOrderHistoryCollection:
             symbol=Symbol('BTC-USDT'),
             side='BUY',
             price=Price(40000, 8, 2),
-            amount='1.0',
+            amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=True,
             is_cancelled=False,

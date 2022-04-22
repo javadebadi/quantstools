@@ -4,6 +4,7 @@ from datetime import datetime
 from pytz import timezone
 from pytz import utc
 from .price import Price
+from .amount import Amount
 from .order import Order
 from .exception import OrderCancelError
 from .symbol import Symbol
@@ -16,7 +17,7 @@ class OrderHistory(Order):
         symbol: Symbol,
         side: str,
         price: Price,
-        amount: str,
+        amount: Amount,
         mili_unixtime: int,
         is_active: bool = True,
         is_cancelled: bool = False,
@@ -108,7 +109,7 @@ class OrderHistory(Order):
             rounding = self.price.precision
         else:
             assert rounding >= 0 and type(rounding) == int
-        return round(float(self.price.get_price()) * float(self.amount), rounding)
+        return self.order.get_value(rounding=rounding)
 
     def get_mili_unixtime(self) -> int:
         return self.mili_unixtime

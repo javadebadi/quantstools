@@ -6,6 +6,7 @@ from quantstools.exception import OrderError, OrderCancelError
 from quantstools.order_history import OrderHistory
 from quantstools.order import Order
 from quantstools.price import Price
+from quantstools.amount import Amount
 from quantstools.symbol import Symbol
 
 
@@ -17,7 +18,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=True,
             is_cancelled=False,
@@ -35,7 +36,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=True,
             is_cancelled=False,
@@ -49,7 +50,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=98,
             is_cancelled=False,
@@ -63,7 +64,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=True,
             is_cancelled='xyz',
@@ -77,7 +78,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557.9594,
             is_active=True,
             is_cancelled=False,
@@ -90,7 +91,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=True,
             is_cancelled=False,
@@ -106,7 +107,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=False,
             is_cancelled=False,
@@ -123,7 +124,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=True,
             is_cancelled=False,
@@ -139,7 +140,7 @@ class TestOrderHistory:
             symbol=Symbol('ETH-BTC'),
             side='BUY',
             price=Price(0.12, 5, 4),
-            amount='0.015',
+            amount=Amount(0.015, 5, 3),
             mili_unixtime=1650160131557,
             is_active=True,
             is_cancelled=False,
@@ -152,7 +153,7 @@ class TestOrderHistory:
             Symbol('ETH-BTC'),
             'BUY',
             Price(0.12, 5, 4),
-            '0.15',
+            Amount(0.15, 5, 2),
             'LIMIT',
         )
         o = OrderHistory.from_order(
@@ -173,7 +174,7 @@ class TestCaseOrderHistory(unittest.TestCase):
                 symbol=Symbol('ETH-BTC'),
                 side='BUY',
                 price=Price(0.12, 5, 4),
-                amount='0.015',
+                amount=Amount(0.015, 5, 3),
                 mili_unixtime=0,
                 is_active=True,
                 is_cancelled=False,
@@ -197,7 +198,7 @@ class TestCaseOrderHistory(unittest.TestCase):
                 symbol=Symbol('ETH-BTC'),
                 side='BUY',
                 price=Price(0.12, 5, 4),
-                amount='0.015',
+                amount=Amount(0.015, 5, 3),
                 type_='LIMIT',
                 )
 

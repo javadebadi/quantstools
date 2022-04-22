@@ -3,6 +3,7 @@
 
 from .order import Order
 from .price import Price
+from .amount import Amount
 from .symbol import Symbol
 
 class OrderCollection:
@@ -39,7 +40,7 @@ class OrderCollection:
         return sum(order.get_value() for order in self._orders)
 
     def get_total_amount(self) -> float:
-        return sum(float(order.amount) for order in self._orders)
+        return sum(float(order.amount.get_amount()) for order in self._orders)
 
     def get_avg_price(self) -> float:
         if not self._orders:

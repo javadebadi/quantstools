@@ -1,120 +1,19 @@
 """A module to manipulate Price.
 """
 
-from unicodedata import decimal
+from .number_string import NumberString
 
-
-class Price:
+class Price(NumberString):
     """ """
     
     def __init__(self, number, digits=9, precision=8):
-        self.digits = digits
-        self.precision = precision
-        self.number = number
+        super().__init__(
+            number=number,
+            digits=digits,
+            precision=precision
+        )
 
-    @property
-    def number(self) -> float:
-        """Returns the number attribute"""
-        return self._number
-
-    @number.setter
-    def number(self, number: float):
-        """
-
-        Parameters
-        ----------
-        number : float
-
-        Returns
-        -------
-
-        Raises
-        ------
-        TypeError
-
-        
-        """
-        if type(number) == float or type(number) == int:
-            self._number = round(float(number), self.precision)
-        else:
-            raise TypeError(
-                f"Expected number of type int or float"
-                f" but got type '{number.__class__.__name__}'"
-                )
-                
-        if len(str(self._number).split('.')[0]) > self.integer_digits:
-            raise AssertionError(
-                f"The number of integer part "
-                f"'{str(self._number).split('.')[0]}' "
-                f"could not be bigger than {self.integer_digits}"
-                )
-
-    @property
-    def digits(self) -> int:
-        """Returns the digits attribute"""
-        return self._digits
-
-    @digits.setter
-    def digits(self, digits: int):
-        """
-
-        Parameters
-        ----------
-        digits : int
-            
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        TypeError
-        
-        """
-        if type(digits) == int:
-            self._digits = digits
-        else:
-            raise TypeError(
-                f"Expected digits of type int"
-                f" but got type '{digits.__class__.__name__}'"
-                )
-
-    @property
-    def precision(self) -> int:
-        """Returns the precision attribute"""
-        return self._precision
-
-    @precision.setter
-    def precision(self, precision: int):
-        """
-
-        Parameters
-        ----------
-        precision : int
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        TypeError
-
-        
-        """
-        if type(precision) == int:
-            self._precision = precision
-        else:
-            raise TypeError(
-                f"Expected precision of type int"
-                f" but got type '{precision.__class__.__name__}'"
-                )
-
-    @property
-    def integer_digits(self) -> int:
-        """Returns the number of integer digits of the `self.number`"""
-        return self.digits - self.precision
-        
+ 
     def increase(self, percentage: float = 0.01, fee: float = 0.004):
         """Return a new Price objects with increased percentage.
 
@@ -184,14 +83,7 @@ class Price:
 
     def get_price(self) -> str:
         """Returns the price as string"""
-        if self.number > 1:
-            int_part = str(self.number).split('.')[0]
-        else:
-            int_part = '0'
-
-        decimal_part = str(self.number).split('.')[1][:self.precision].ljust(self.precision, '0')
-
-        return (int_part + '.' + decimal_part)
+        return super().get_number()
         
     def __lt__(self, other):
         return self.number < other.number

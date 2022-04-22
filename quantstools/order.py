@@ -2,6 +2,7 @@
 """
 
 from .price import Price
+from .amount import Amount
 from .symbol import Symbol
 
 class Order:
@@ -11,7 +12,7 @@ class Order:
         symbol: Symbol,
         side: str,
         price: Price,
-        amount: str,
+        amount: Amount,
         type_: str = 'LIMIT',
         ):
         self.symbol = symbol
@@ -49,12 +50,12 @@ class Order:
         self._price = price
 
     @property
-    def amount(self) -> str:
+    def amount(self) -> Amount:
         return self._amount
 
     @amount.setter
     def amount(self, amount) -> None:
-        assert type(amount) == str
+        assert isinstance(amount, Amount)
         self._amount = amount
 
     @property
@@ -71,19 +72,19 @@ class Order:
 
     def get_numeric_amount(self) -> float:
         if self.side == 'BUY':
-            return abs(float(self.amount))
+            return abs(float(self.amount.get_number()))
         elif self.side == 'SELL':
-            return - abs(float(self.amount))
+            return - abs(float(self.amount.get_number()))
 
-    def get_value(self) -> float:
-        return self.get_numeric_amount() * float(self.get_price())
+    def get_value(self, rounding=4) -> float:
+        return round(self.get_numeric_amount() * float(self.get_price()), rounding)
 
     def to_dict(self, numeric=False) -> dict:
         d = {}
         d['symbol'] = self.symbol.symbol
         d['side'] = self.side
         d['price'] = self.get_price()
-        d['amount'] = self.amount
+        d['amount'] = self.amount.get_amount()
         if numeric is True:
             d['price'] = float(d['price'])
             d['amount'] = float(d['amount'])
@@ -97,4 +98,4 @@ class Order:
             return False
 
     def __str__(self) -> str:
-        return f'{self.amount} | {self.get_price()} | {self.get_value()}'
+        return f'{self.amount.get_amount()} | {self.get_price()} | {self.get_value()}'
