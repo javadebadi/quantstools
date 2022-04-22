@@ -9,22 +9,22 @@ from quantstools.symbol import Symbol
 class TestOrderCollection(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.symbol = Symbol('ETH-BTC')
+        self.symbol = Symbol('ETH-BTC', 5, 4)
 
     def test_add_order(self) -> None:
         oc = OrderCollection(self.symbol)
-        o = Order(self.symbol, 'BUY', Price(0.015, 5, 4) , Amount(0.15, 4,2), 'LIMIT')
+        o = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, 4,2), 'LIMIT')
         oc.add_order(o)
         assert len(oc._orders) == 1
         assert oc.orders[0] == o
-        o = Order(self.symbol, 'SELL', Price(0.016, 5, 4) , Amount(0.5, 4,2), 'LIMIT')
+        o = Order(self.symbol, 'SELL', Price(0.016, self.symbol.digits, self.symbol.precision) , Amount(0.5, 4,2), 'LIMIT')
         oc.add_order(o)
         assert len(oc._orders) == 2
         assert oc.orders[1] == o
 
     def test_add_order_raises_assertion_error(self):
         oc = OrderCollection(self.symbol)
-        o = Order(Symbol('BTC-USDT'), 'BUY', Price(0.015, 5, 4) , Amount(0.15, 4,2), 'LIMIT')
+        o = Order(Symbol('BTC-USDT', 12, 4), 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, 4,2), 'LIMIT')
         with pytest.raises(AssertionError) as exc_info:
             oc.add_order(Order)
         with pytest.raises(AssertionError) as exc_info:
@@ -32,7 +32,7 @@ class TestOrderCollection(unittest.TestCase):
 
     def test_reset(self):
         oc = OrderCollection(self.symbol)
-        o = Order(self.symbol, 'BUY', Price(0.015, 5, 4) , Amount(0.15, 4,2), 'LIMIT')
+        o = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, 4,2), 'LIMIT')
         oc.add_order(o)
         assert len(oc._orders) == 1
         oc.reset()
@@ -40,7 +40,7 @@ class TestOrderCollection(unittest.TestCase):
 
     def test_remove_last_order(self) -> None:
         oc = OrderCollection(self.symbol)
-        o = Order(self.symbol, 'BUY', Price(0.015, 5, 4) , Amount(0.15, 4,2), 'LIMIT')
+        o = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, 4,2), 'LIMIT')
         oc.add_order(o)
         assert len(oc._orders) == 1
         assert oc.orders[0] == o
@@ -54,10 +54,10 @@ class TestOrderCollection(unittest.TestCase):
 class TestCaseOrderCollection(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.symbol = Symbol('BTC-USDT')
+        self.symbol = Symbol('BTC-USDT', 8, 2)
         self.oc = OrderCollection(self.symbol)
-        o1 = Order(self.symbol, 'BUY', Price(40000,8,2), Amount(1.0, 3, 1))
-        o2 = Order(self.symbol, 'BUY', Price(20000,8,2), Amount(1.0, 3, 1))
+        o1 = Order(self.symbol, 'BUY', Price(40000, self.symbol.digits, self.symbol.precision), Amount(1.0, 3, 1))
+        o2 = Order(self.symbol, 'BUY', Price(20000, self.symbol.digits, self.symbol.precision), Amount(1.0, 3, 1))
         self.oc.add_order(o1)
         self.oc.add_order(o2)
 
@@ -75,5 +75,4 @@ class TestCaseOrderCollection(unittest.TestCase):
             {'symbol': 'BTC-USDT', 'side': 'BUY', 'price': '40000.00', 'amount': '1.0', 'type_': 'LIMIT'},
             {'symbol': 'BTC-USDT', 'side': 'BUY', 'price': '20000.00', 'amount': '1.0', 'type_': 'LIMIT'},
         ]
-        print(self.oc.get_orders_list_of_dict()[0].values())
         assert self.oc.get_orders_list_of_dict() == l

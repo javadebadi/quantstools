@@ -9,25 +9,27 @@ from quantstools.symbol import Symbol
 class TestOrderHistoryCollection:
 
     def test_init(self):
-        o = OrderHistoryCollection(symbol=Symbol('BTC-USDT'))
-        assert o.symbol == Symbol('BTC-USDT')
+        symbol = Symbol('BTC-USDT', 8, 2)
+        o = OrderHistoryCollection(symbol=symbol)
+        assert o.symbol == Symbol('BTC-USDT', 8, 2)
         assert o.active_orders == set()
         assert o.done_orders == set()
         assert o.cancelled_orders == set()
 
     def test_add_order_history_when_order_is_active(self):
+        symbol = Symbol('BTC-USDT', 8, 2)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
-            symbol=Symbol('BTC-USDT'),
+            symbol=symbol,
             side='BUY',
-            price=Price(40000, 8, 2),
+            price=Price(40000, symbol.digits, symbol.precision),
             amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=True,
             is_cancelled=False,
             type_='LIMIT',   
         )
-        oc = OrderHistoryCollection(symbol=Symbol('BTC-USDT'))
+        oc = OrderHistoryCollection(symbol=symbol)
         oc.add_order_history(
             order=order
         )
@@ -36,18 +38,19 @@ class TestOrderHistoryCollection:
         assert oc.cancelled_orders == set()
     
     def test_add_order_history_when_order_is_done(self):
+        symbol = Symbol('BTC-USDT', 8, 2)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
-            symbol=Symbol('BTC-USDT'),
+            symbol=symbol,
             side='BUY',
-            price=Price(40000, 8, 2),
+            price=Price(40000, symbol.digits, symbol.precision),
             amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=False,
             is_cancelled=False,
             type_='LIMIT',   
         )
-        oc = OrderHistoryCollection(symbol=Symbol('BTC-USDT'))
+        oc = OrderHistoryCollection(symbol=symbol)
         oc.add_order_history(
             order=order
         )
@@ -56,18 +59,19 @@ class TestOrderHistoryCollection:
         assert oc.cancelled_orders == set()
     
     def test_add_order_history_when_order_is_cancelled(self):
+        symbol = Symbol('BTC-USDT', 8, 2)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
-            symbol=Symbol('BTC-USDT'),
+            symbol=symbol,
             side='BUY',
-            price=Price(40000, 8, 2),
+            price=Price(40000, symbol.digits, symbol.precision),
             amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=False,
             is_cancelled=True,
             type_='LIMIT',   
         )
-        oc = OrderHistoryCollection(symbol=Symbol('BTC-USDT'))
+        oc = OrderHistoryCollection(symbol=symbol)
         oc.add_order_history(
             order=order
         )
@@ -76,18 +80,19 @@ class TestOrderHistoryCollection:
         assert oc.cancelled_orders == set([order])
 
     def test_add_order_history_when_same_order_is_added_again_after_it_is_cancelled_will_remove_from_active_orders(self):
+        symbol = Symbol('BTC-USDT', 8, 2)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
-            symbol=Symbol('BTC-USDT'),
+            symbol=symbol,
             side='BUY',
-            price=Price(40000, 8, 2),
+            price=Price(40000, symbol.digits, symbol.precision),
             amount=Amount(1.0, 2, 1),
             mili_unixtime=15489161,
             is_active=True,
             is_cancelled=False,
             type_='LIMIT',   
         )
-        oc = OrderHistoryCollection(symbol=Symbol('BTC-USDT'))
+        oc = OrderHistoryCollection(symbol=symbol)
         oc.add_order_history(
             order=order
         )
@@ -106,7 +111,7 @@ class TestOrderHistoryCollection:
 class TestCaseOrderHistoryCollection(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.symbol = Symbol('BTC-USDT')
+        self.symbol = Symbol('BTC-USDT', 8, 2)
         self.ohc = OrderHistoryCollection(self.symbol)
         self.ohc.add_order_history(
             OrderHistory(

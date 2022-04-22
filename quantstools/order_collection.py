@@ -53,6 +53,16 @@ class OrderCollection:
     def get_orders_list_of_dict(self, numeric=False) -> list:
         return [order.to_dict(numeric=numeric) for order in self._orders]
 
+    def __eq__(self, other):
+        if type(self) != type(other):
+            return False
+        if len(self.orders) != len(other.orders):
+            return False
+        for index, order in enumerate(self.orders):
+            if other.orders[index] != order:
+                return False
+        return True
+
     def __str__(self) -> str:
         s = ""
         for order in self._orders:

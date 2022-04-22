@@ -8,7 +8,7 @@ from quantstools.symbol import Symbol
 class TestOrder(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.symbol = Symbol('ETH-BTC')
+        self.symbol = Symbol('ETH-BTC', 12, 4)
 
     def test_symbol_property(self):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))
