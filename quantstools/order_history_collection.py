@@ -54,6 +54,51 @@ class OrderHistoryCollection:
             for order_ in set(order):
                 self._add_order_history(order_)
 
+    def filter_by_mili_unixtime(self, mili_unixtime__lte=None):
+        if mili_unixtime__lte is None:
+            return self
+        else:
+            new_ohc = OrderHistoryCollection(self.symbol)
+            for order in self.done_orders:
+                if order.mili_unixtime <= mili_unixtime__lte:
+                    new_ohc.add_order_history(order)
+            for order in self.active_orders:
+                if order.mili_unixtime <= mili_unixtime__lte:
+                    new_ohc.add_order_history(order)
+            for order in self.cancelled_orders:
+                if order.mili_unixtime <= mili_unixtime__lte:
+                    new_ohc.add_order_history(order)
+            return new_ohc
+
+    def get_total_value(self, mili_unixtime__lte=None):
+        if mili_unixtime__lte is None:
+            return sum(order.get_value() for order in self._done_orders)
+        else:
+            return self.filter_by_mili_unixtime(mili_unixtime__lte=mili_unixtime__lte).get_total_value(mili_unixtime__lte=None)
+
+    def get_total_amount(self, mili_unixtime__lte=None):
+        if mili_unixtime__lte is None:
+            return sum(order.get_amount(numeric=True) for order in self._done_orders)
+        else:
+            return self.filter_by_mili_unixtime(mili_unixtime__lte=mili_unixtime__lte).get_total_amount(mili_unixtime__lte=None)
+
+    def get_avg_price(self, mili_unixtime_lte=None) -> float:
+        total_value = self.get_total_value(mili_unixtime__lte=mili_unixtime_lte)
+        total_amount = self.get_total_amount(mili_unixtime__lte=mili_unixtime_lte)
+        if total_amount == 0:
+            return 0
+        return total_value / total_amount
+
+    def get_total_profit(self, sell_price: float = None, mili_unixtime_lte: int = None):
+        total_value = self.get_total_value(mili_unixtime__lte=mili_unixtime_lte)
+        total_amount = self.get_total_amount(mili_unixtime__lte=mili_unixtime_lte)
+        if total_amount == 0.0:
+            return total_value
+        else:
+            if sell_price is None:
+                raise ValueError("Sell Price must be provided when total amount is not zero")
+            return sell_price * total_amount - total_value
+
     def clean(self):
         """Removes cancelled orders"""
         self._cancelled_orders = set()

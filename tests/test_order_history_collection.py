@@ -101,3 +101,75 @@ class TestOrderHistoryCollection:
         assert oc.active_orders == set()
         assert oc.done_orders == set()
         assert oc.cancelled_orders == set([order])
+
+
+class TestCaseOrderHistoryCollection(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.symbol = Symbol('BTC-USDT')
+        self.ohc = OrderHistoryCollection(self.symbol)
+        self.ohc.add_order_history(
+            OrderHistory(
+                id_='1000',
+                symbol=self.symbol,
+                side='BUY',
+                price=Price(20000, 12, 4),
+                amount=Amount(1.0, 12, 6),
+                mili_unixtime=100000000,
+                is_active=False,
+                is_cancelled=False,
+                type_='LIMIT',
+            )
+        )
+        self.ohc.add_order_history(
+            OrderHistory(
+                id_='2000',
+                symbol=self.symbol,
+                side='BUY',
+                price=Price(40000, 12, 4),
+                amount=Amount(1.0, 12, 6),
+                mili_unixtime=200000000,
+                is_active=False,
+                is_cancelled=False,
+                type_='LIMIT',
+            )
+        )
+
+    def test_get_total_value(self):
+        assert self.ohc.get_total_value(mili_unixtime__lte=1000) == pytest.approx(0)
+        assert self.ohc.get_total_value(mili_unixtime__lte=100000005) == pytest.approx(20000)
+        assert self.ohc.get_total_value(mili_unixtime__lte=200000005) == pytest.approx(60000)
+        assert self.ohc.get_total_value() == pytest.approx(60000)
+
+    def test_get_total_amount(self):
+        assert self.ohc.get_total_amount(mili_unixtime__lte=1000) == pytest.approx(0)
+        assert self.ohc.get_total_amount(mili_unixtime__lte=100000005) == pytest.approx(1)
+        assert self.ohc.get_total_amount(mili_unixtime__lte=200000005) == pytest.approx(2)
+        assert self.ohc.get_total_amount() == pytest.approx(2)
+
+    def test_get_avg_price(self):
+        assert self.ohc.get_avg_price(mili_unixtime_lte=1000) == pytest.approx(0)
+        assert self.ohc.get_avg_price(mili_unixtime_lte=100000005) == pytest.approx(20000)
+        assert self.ohc.get_avg_price(mili_unixtime_lte=200000005) == pytest.approx(30000)
+        assert self.ohc.get_avg_price() == pytest.approx(30000)
+
+    def test_get_total_profit(self):
+        assert self.ohc.get_total_profit(mili_unixtime_lte=1000) == pytest.approx(0)
+        with pytest.raises(ValueError) as exc_info:
+            assert self.ohc.get_total_profit(mili_unixtime_lte=100000005)
+        assert self.ohc.get_total_profit(
+            sell_price=20000.0,
+            mili_unixtime_lte=100000005
+            ) == pytest.approx(0)
+        assert self.ohc.get_total_profit(
+            sell_price=60000.0,
+            mili_unixtime_lte=100000005
+            ) == pytest.approx(40000)
+        assert self.ohc.get_total_profit(
+            sell_price=30000.0,
+            mili_unixtime_lte=200000005
+            ) == pytest.approx(0)
+        assert self.ohc.get_total_profit(
+            sell_price=60000.0,
+            mili_unixtime_lte=200000005
+            ) == pytest.approx(60000)

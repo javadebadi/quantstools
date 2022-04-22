@@ -67,8 +67,17 @@ class Order:
         assert type_ in ['LIMIT', 'MARKET']
         self._type_ = type_
 
-    def get_price(self) -> Price:
-        return self.price.get_price()
+    def get_price(self, numeric=False) -> Price:
+        if numeric is False:
+            return self.price.get_price()
+        else:
+            return float(self.get_price())
+
+    def get_amount(self, numeric=False):
+        if numeric is False:
+            return self.amount.get_amount()
+        else:
+            return self.get_numeric_amount()
 
     def get_numeric_amount(self) -> float:
         if self.side == 'BUY':
