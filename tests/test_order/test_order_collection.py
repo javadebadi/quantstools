@@ -1,10 +1,13 @@
 import pytest
 import unittest
-from quantstools.price import Price
-from quantstools.amount import Amount
-from quantstools.order import Order
-from quantstools.order_collection import OrderCollection
-from quantstools.symbol import Symbol
+from quantstools.order import (
+    Symbol,
+    Price,
+    Amount,
+    Order,
+    OrderCollection,
+)
+
 
 class TestOrderCollection(unittest.TestCase):
 

@@ -53,6 +53,9 @@ class OrderCollection:
     def get_orders_list_of_dict(self, numeric=False) -> list:
         return [order.to_dict(numeric=numeric) for order in self._orders]
 
+    def serialize(self) -> list:
+        return [order.to_dict() for order in self.orders]
+
     def __eq__(self, other):
         if type(self) != type(other):
             return False

@@ -1,6 +1,6 @@
 import pytest
 import unittest
-from quantstools.symbol import Symbol
+from quantstools.order import Symbol
 
 
 class TestSymbol:

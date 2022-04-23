@@ -1,9 +1,11 @@
 import pytest
 import unittest
-from quantstools.price import Price
-from quantstools.amount import Amount
-from quantstools.order import Order
-from quantstools.symbol import Symbol
+from quantstools.order import (
+    Price,
+    Amount,
+    Order,
+    Symbol,
+)
 
 class TestOrder(unittest.TestCase):
 

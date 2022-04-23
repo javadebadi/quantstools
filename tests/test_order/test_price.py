@@ -1,6 +1,6 @@
 import pytest
 import unittest
-from quantstools.price import Price
+from quantstools.order import Price
 
 
 class TestPrice:

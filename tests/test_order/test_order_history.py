@@ -2,12 +2,16 @@ from datetime import datetime
 import unittest
 import pytz
 import pytest
-from quantstools.exception import OrderError, OrderCancelError
-from quantstools.order_history import OrderHistory
-from quantstools.order import Order
-from quantstools.price import Price
-from quantstools.amount import Amount
-from quantstools.symbol import Symbol
+from quantstools.order import (
+    Symbol,
+    Price,
+    Amount,
+    Order,
+    OrderHistory,
+    OrderCollection,
+    OrderHistoryCollection,
+)
+from quantstools.order.exception import OrderError, OrderCancelError
 
 
 class TestOrderHistory:

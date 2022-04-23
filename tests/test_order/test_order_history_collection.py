@@ -1,10 +1,15 @@
 import unittest
 import pytest
-from quantstools.order_history import OrderHistory
-from quantstools.price import Price
-from quantstools.amount import Amount
-from quantstools.order_history_collection import OrderHistoryCollection
-from quantstools.symbol import Symbol
+from quantstools.order import (
+    Symbol,
+    Price,
+    Amount,
+    Order,
+    OrderHistory,
+    OrderCollection,
+    OrderHistoryCollection,
+)
+
 
 class TestOrderHistoryCollection:
 
