@@ -53,6 +53,16 @@ class OrderCollection:
     def get_orders_list_of_dict(self, numeric=False) -> list:
         return [order.to_dict(numeric=numeric) for order in self._orders]
 
+    def get_report(self):
+        s = "========== Order Collection Report ==========\n"
+        s += f"Number of orders = {len(self)}\n"
+        s += f"Average Price = {self.get_avg_price()} \n"
+        s += f"Total Value = {self.get_total_value()} \n"
+        return s
+
+    def __len__(self):
+        return len(self._orders)
+
     def serialize(self) -> list:
         return [order.to_dict() for order in self.orders]
 
@@ -72,3 +82,7 @@ class OrderCollection:
             s += str(order) + "\n"
         s = s.strip()
         return s
+
+    def __iter__(self):
+        for item in self._orders:
+            yield item
