@@ -79,3 +79,17 @@ class TestCaseOrderCollection(unittest.TestCase):
             {'symbol': 'BTC-USDT', 'side': 'BUY', 'price': '20000.00', 'amount': '1.0', 'type_': 'LIMIT'},
         ]
         assert self.oc.get_orders_list_of_dict() == l
+
+    def test_get_report(self) -> None:
+        s = "========== Order Collection Report ==========\n"
+        s += f"Number of orders = 2\n"
+        s += f"Average Price = 30000.0\n"
+        s += f"Total Value = 60000.0\n"
+        assert self.oc.get_report() == s
+
+    def test_len(self) -> None:
+        assert len(self.oc) == 2
+
+    def test_iter(self) -> None:
+        for index, item in enumerate(self.oc):
+            assert item == self.oc._orders[index] 

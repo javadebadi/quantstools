@@ -56,8 +56,8 @@ class OrderCollection:
     def get_report(self):
         s = "========== Order Collection Report ==========\n"
         s += f"Number of orders = {len(self)}\n"
-        s += f"Average Price = {self.get_avg_price()} \n"
-        s += f"Total Value = {self.get_total_value()} \n"
+        s += f"Average Price = {self.get_avg_price()}\n"
+        s += f"Total Value = {self.get_total_value()}\n"
         return s
 
     def __len__(self):
