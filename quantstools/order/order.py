@@ -100,6 +100,10 @@ class Order:
         d['type_'] = self.type_
         return d
 
+    def serialize(self, keys=['symbol', 'side', 'amount', 'price']) -> dict:
+        d = self.to_dict(numeric=False)
+        return dict((k, d[k]) for k in keys if k in d)
+
     def __eq__(self, other) -> bool:
         if self.to_dict() == other.to_dict():
             return True

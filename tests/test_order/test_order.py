@@ -94,3 +94,13 @@ class TestOrder(unittest.TestCase):
             type_='LIMIT',
             )
         assert o.get_value() == pytest.approx(-0.015*0.12)
+
+    def test_serialize(self):
+        o = Order(
+            symbol=self.symbol,
+            side='BUY',
+            price=Price(0.12, 5, 4),
+            amount=Amount(0.015, 4,3),
+            type_='LIMIT',
+            )
+        assert o.serialize() == {'symbol':'ETH-BTC', 'amount': '0.015', 'price':'0.1200', 'side': 'BUY'}
