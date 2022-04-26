@@ -139,6 +139,22 @@ class OrderHistory(Order):
         d['datetime'] = self.get_utcdatetime().isoformat()
         return d
 
+    def serialize(
+            self,
+            keys=[
+                'symbol',
+                'side',
+                'amount',
+                'price',
+                'type_',
+                'mili_unixtime',
+                'is_active',
+                'is_cancelled',
+                ],
+                ) -> dict:
+        d = self.to_dict(numeric=False)
+        return dict((k, d[k]) for k in keys if k in d)  # TODO: add test for this method
+
     @property
     def order(self) -> Order:
         return Order(
