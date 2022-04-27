@@ -17,7 +17,7 @@ from quantstools.order.exception import OrderError, OrderCancelError
 class TestOrderHistory:
 
     def test_normal_values_for_properties(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         o = OrderHistory(
             id_='awe6623f2366f2f2fs',
             symbol=symbol,
@@ -35,7 +35,7 @@ class TestOrderHistory:
         assert o.mili_unixtime == 1650160131557
 
     def test_id__property_raises_error(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_=15,
@@ -50,7 +50,7 @@ class TestOrderHistory:
         )
 
     def test_is_active_property_raises_error(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_='fweoino845fwef',
@@ -65,7 +65,7 @@ class TestOrderHistory:
             )
 
     def test_is_cancelled_property_raises_error(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_='fweoino845fwef',
@@ -80,7 +80,7 @@ class TestOrderHistory:
             )
 
     def test_mili_unixtime_property_raises_error(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         with pytest.raises(AssertionError) as exc_info:
             o = OrderHistory(
             id_='fweoino845fwef',
@@ -95,7 +95,7 @@ class TestOrderHistory:
             )
 
     def test_cancel_method_make_is_cancelled_true_and_is_active_false(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         o = OrderHistory(
             id_='fweoino845fwef',
             symbol=symbol,
@@ -112,7 +112,7 @@ class TestOrderHistory:
         assert o.is_cancelled is True
 
     def test_cancel_metho_raises_error_when_is_active_is_false(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         o = OrderHistory(
             id_='fweoino845fwef',
             symbol=symbol,
@@ -130,7 +130,7 @@ class TestOrderHistory:
         assert exc_info.match(message)
 
     def test_deactivate(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         o = OrderHistory(
             id_='fweoino845fwef',
             symbol=symbol,
@@ -147,7 +147,7 @@ class TestOrderHistory:
         assert o.is_active is False
 
     def test_get_value(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         o = OrderHistory(
             id_='fweoino845fwef',
             symbol=symbol,
@@ -162,7 +162,7 @@ class TestOrderHistory:
         assert o.get_value() == pytest.approx(0.015*0.12)
 
     def test_from_order(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         order = Order(
             symbol,
             'BUY',
@@ -183,7 +183,7 @@ class TestOrderHistory:
 class TestCaseOrderHistory(unittest.TestCase):
 
     def setUp(self) -> None:
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         self.o = OrderHistory(
                 id_='fweoino845fwef',
                 symbol=symbol,
@@ -209,7 +209,7 @@ class TestCaseOrderHistory(unittest.TestCase):
         assert datetime(1970, 1, 1, 3, 30, 0) == self.o.get_date_in_timezone(tz='Asia/Tehran').replace(tzinfo=None)
 
     def test_order(self):
-        symbol = Symbol('ETH-BTC', 5, 4)
+        symbol = Symbol('ETH-BTC', 5, 4, 10, 6)
         assert self.o.order == Order(
                 symbol=symbol,
                 side='BUY',
