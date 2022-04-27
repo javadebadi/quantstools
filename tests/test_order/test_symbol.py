@@ -26,4 +26,10 @@ class TestSymbol:
 
     def test_to_dict(self):
         s = Symbol('BTC-USDT', 12, 4, 12, 6)
-        assert s.to_dict() ==  {'symbol': 'BTC-USDT', 'digits': 12, 'precision': 4, 'amount_digits': 12, 'amount_precision': 6}
+        assert s.to_dict() ==  {
+            'symbol': 'BTC-USDT',
+            'digits': 12,
+            'precision': 4,
+            'amount_digits': 12,
+            'amount_precision': 6,
+            }
