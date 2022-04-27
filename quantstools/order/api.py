@@ -2,6 +2,7 @@
 with order management
 """
 
+import logging
 from .api_mappings import find_api_params_mapping
 
 
