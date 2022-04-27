@@ -221,6 +221,12 @@ class TestCaseOrderHistory(unittest.TestCase):
     def test_hash(self):
         assert hash(self.o) == hash(self.o.id_)
 
+    def test_deserialize_seralized_object(self):
+        data = self.o.serialize()
+        new_o = self.o.deserialize(data)
+        assert self.o == new_o
+        
+
 
 
         

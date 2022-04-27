@@ -134,7 +134,10 @@ class OrderHistory(Order):
     def to_dict(self, numeric=False) -> dict:
         d = super().to_dict(numeric=numeric)
         d['id'] = self.id_
+        d['id_'] = self.id_
         d['mili_unixtime'] = self.get_mili_unixtime()
+        d['is_active'] = self.is_active
+        d['is_cancelled'] = self.is_cancelled
         d['unixtime'] = self.get_unixtime()
         d['datetime'] = self.get_utcdatetime().isoformat()
         return d
@@ -143,6 +146,7 @@ class OrderHistory(Order):
             self,
             keys=[
                 'symbol',
+                'id_',
                 'side',
                 'amount',
                 'price',
@@ -154,6 +158,23 @@ class OrderHistory(Order):
                 ) -> dict:
         d = self.to_dict(numeric=False)
         return dict((k, d[k]) for k in keys if k in d)  # TODO: add test for this method
+
+    def deserialize(self, data: dict):
+        if data['symbol'] != self.symbol.symbol:
+            raise ValueError(
+                f"This OrderHistory instance could not deserialize symbol = {data['symbol']}"
+                )
+        return OrderHistory(
+            id_=data['id_'],
+            symbol=self.symbol,
+            side=data['side'],
+            price=Price(float(data['price']), self.symbol.digits, self.symbol.precision),
+            amount=Amount(float(data['amount']), self.symbol.amount_digits, self.symbol.amount_precision),
+            mili_unixtime=int(data['mili_unixtime']),
+            is_active=bool(data['is_active']),
+            is_cancelled=bool(data['is_cancelled']),
+            type_=data['type_']
+        )
 
     @property
     def order(self) -> Order:
