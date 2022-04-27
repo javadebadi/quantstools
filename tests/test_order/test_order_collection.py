@@ -92,4 +92,4 @@ class TestCaseOrderCollection(unittest.TestCase):
 
     def test_iter(self) -> None:
         for index, item in enumerate(self.oc):
-            assert item == self.oc._orders[index] 
+            assert item == self.oc._orders[index]

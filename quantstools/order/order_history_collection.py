@@ -1,6 +1,7 @@
 """A module for order collection
 """
 
+from quantstools.order.amount import Amount
 from .order import Order
 from .order_history import OrderHistory
 from .order_collection import OrderCollection
@@ -102,3 +103,33 @@ class OrderHistoryCollection:
     def clean(self):
         """Removes cancelled orders"""
         self._cancelled_orders = set()
+
+    def serialize(self):
+        serialized_data = {}
+        serialized_data["active_orders"] = [order.serialize() for order in self._active_orders]
+        serialized_data["done_orders"] = [order.serialize() for order in self._done_orders]
+        serialized_data["cancelled_orders"] = [order.serialize() for order in self._cancelled_orders]
+        return serialized_data
+
+    def deserialize(self, serialized_data, inplace=False):
+        assert {"active_orders", "done_orders", "cancelled_orders"} == set(serialized_data.keys())
+        oc = OrderHistoryCollection(self.symbol)
+        o = OrderHistory(
+            id_='FAKE',
+            symbol=self.symbol,
+            side='BUY',
+            price=Price(0),
+            amount=Amount(0),
+            mili_unixtime=0,
+            )
+        for order_category in ["active_orders", "done_orders", "cancelled_orders"]:
+            orders_data = serialized_data[order_category]
+            for data in orders_data:
+                if inplace is True:
+                    self.add_order_history(o.deserialize(data))
+                else:
+                    oc.add_order_history(o.deserialize(data))
+        if inplace is True:
+            return self
+        else:
+            return oc

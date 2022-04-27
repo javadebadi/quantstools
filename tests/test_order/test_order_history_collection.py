@@ -14,15 +14,15 @@ from quantstools.order import (
 class TestOrderHistoryCollection:
 
     def test_init(self):
-        symbol = Symbol('BTC-USDT', 8, 2)
+        symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
         o = OrderHistoryCollection(symbol=symbol)
-        assert o.symbol == Symbol('BTC-USDT', 8, 2)
+        assert o.symbol == Symbol('BTC-USDT', 8, 2, 12, 6)
         assert o.active_orders == set()
         assert o.done_orders == set()
         assert o.cancelled_orders == set()
 
     def test_add_order_history_when_order_is_active(self):
-        symbol = Symbol('BTC-USDT', 8, 2)
+        symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
             symbol=symbol,
@@ -43,7 +43,7 @@ class TestOrderHistoryCollection:
         assert oc.cancelled_orders == set()
     
     def test_add_order_history_when_order_is_done(self):
-        symbol = Symbol('BTC-USDT', 8, 2)
+        symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
             symbol=symbol,
@@ -64,7 +64,7 @@ class TestOrderHistoryCollection:
         assert oc.cancelled_orders == set()
     
     def test_add_order_history_when_order_is_cancelled(self):
-        symbol = Symbol('BTC-USDT', 8, 2)
+        symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
             symbol=symbol,
@@ -85,7 +85,7 @@ class TestOrderHistoryCollection:
         assert oc.cancelled_orders == set([order])
 
     def test_add_order_history_when_same_order_is_added_again_after_it_is_cancelled_will_remove_from_active_orders(self):
-        symbol = Symbol('BTC-USDT', 8, 2)
+        symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
         order = OrderHistory(
             id_='A4fe4f896wwefbqwe5ef6we',
             symbol=symbol,
@@ -116,7 +116,7 @@ class TestOrderHistoryCollection:
 class TestCaseOrderHistoryCollection(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.symbol = Symbol('BTC-USDT', 8, 2)
+        self.symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
         self.ohc = OrderHistoryCollection(self.symbol)
         self.ohc.add_order_history(
             OrderHistory(
@@ -183,3 +183,81 @@ class TestCaseOrderHistoryCollection(unittest.TestCase):
             sell_price=60000.0,
             mili_unixtime_lte=200000005
             ) == pytest.approx(60000)
+
+
+    def test_serialize(self):
+        serialized = self.ohc.serialize()
+        assert list(serialized.keys()) == ["active_orders", "done_orders", "cancelled_orders"]
+        assert serialized["active_orders"] == []
+        assert serialized["cancelled_orders"] == []
+        assert len(serialized["done_orders"]) == 2
+        assert set(serialized["done_orders"][0].keys()) == set(["symbol", "id_", "side", "price", "amount", "mili_unixtime", "is_active", "is_cancelled", "type_"])
+        s1 = {
+                    "symbol": "BTC-USDT",
+                    "id_": "1000",
+                    "side": "BUY",
+                    "price": "20000.0000",
+                    "amount": "1.000000",
+                    "mili_unixtime": 100000000,
+                    "is_active": False,
+                    "is_cancelled": False,
+                    "type_": "LIMIT",
+                }
+        s2 = {
+                    "symbol": "BTC-USDT",
+                    "id_": "2000",
+                    "side": "BUY",
+                    "price": "40000.0000",
+                    "amount": "1.000000",
+                    "mili_unixtime": 200000000,
+                    "is_active": False,
+                    "is_cancelled": False,
+                    "type_": "LIMIT",
+                }
+        
+        assert serialized["done_orders"][0] == s1 or serialized["done_orders"][0] == s2
+        assert serialized["done_orders"][1] == s1 or serialized["done_orders"][1] == s2
+
+    def test_deserialize(self):
+        serialized_data = {}
+        s1 = {
+                    "symbol": "BTC-USDT",
+                    "id_": "1000",
+                    "side": "BUY",
+                    "price": "20000.0000",
+                    "amount": "1.000000",
+                    "mili_unixtime": 100000000,
+                    "is_active": False,
+                    "is_cancelled": False,
+                    "type_": "LIMIT",
+                }
+        s2 = {
+                    "symbol": "BTC-USDT",
+                    "id_": "2000",
+                    "side": "BUY",
+                    "price": "40000.0000",
+                    "amount": "1.000000",
+                    "mili_unixtime": 200000000,
+                    "is_active": False,
+                    "is_cancelled": False,
+                    "type_": "LIMIT",
+                }
+        with pytest.raises(AssertionError) as exc_info:
+            self.ohc.deserialize(serialized_data=serialized_data)
+        serialized_data = {
+            "done_orders": [
+                s1,
+                s2,
+            ],
+            "cancelled_orders": [],
+            "active_orders": [],
+        }
+        assert self.ohc.serialize() == serialized_data
+
+
+    def test_serialize_deserialize(self):
+        serialized_data = self.ohc.serialize()
+        oc = self.ohc.deserialize(serialized_data)
+        assert oc.done_orders == self.ohc.done_orders
+        assert oc.active_orders == self.ohc.active_orders
+        assert oc.cancelled_orders == self.ohc.cancelled_orders
