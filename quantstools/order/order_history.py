@@ -187,7 +187,7 @@ class OrderHistory(Order):
             )
 
     def __str__(self) -> str:
-        return f'{self.id_} | {self.side} | {self.amount} | {self.price}'
+        return f'{self.id_}'.ljust(33) +  f'| {self.side}'.ljust(6)  + f' | {self.amount.get_amount()}'.ljust(15) +  f' | {self.price.get_price()}'.ljust(15)
 
     def __eq__(self, other) -> bool:
         assert isinstance(other, OrderHistory)
