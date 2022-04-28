@@ -1,3 +1,5 @@
+import os
+import json
 import unittest
 import pytest
 from quantstools.order import (
@@ -41,6 +43,43 @@ class TestOrderHistoryCollection:
         assert oc.active_orders == set([order])
         assert oc.done_orders == set()
         assert oc.cancelled_orders == set()
+
+    def test___add__(self):
+        symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
+        order = OrderHistory(
+            id_='A4fe4f896wwefbqwe5ef6we',
+            symbol=symbol,
+            side='BUY',
+            price=Price(40000, symbol.digits, symbol.precision),
+            amount=Amount(1.0, symbol.amount_digits, symbol.amount_precision),
+            mili_unixtime=15489161,
+            is_active=True,
+            is_cancelled=False,
+            type_='LIMIT',   
+        )
+        oc = OrderHistoryCollection(symbol=symbol)
+        oc.add_order_history(
+            order=order
+        )
+        orderx = OrderHistory(
+            id_='Ow;9wefOif2366wefbw',
+            symbol=symbol,
+            side='BUY',
+            price=Price(40000, symbol.digits, symbol.precision),
+            amount=Amount(1.0, symbol.amount_digits, symbol.amount_precision),
+            mili_unixtime=17489161,
+            is_active=True,
+            is_cancelled=False,
+            type_='LIMIT',   
+        )
+        ocx = OrderHistoryCollection(symbol=symbol)
+        ocx.add_order_history(
+            order=orderx
+        )
+        assert (oc + ocx).active_orders == set([order, orderx])
+        assert (oc + ocx).done_orders == set([])
+        assert (oc + ocx).cancelled_orders == set([])
+
     
     def test_add_order_history_when_order_is_done(self):
         symbol = Symbol('BTC-USDT', 8, 2, 12, 6)
@@ -261,3 +300,9 @@ class TestCaseOrderHistoryCollection(unittest.TestCase):
         assert oc.done_orders == self.ohc.done_orders
         assert oc.active_orders == self.ohc.active_orders
         assert oc.cancelled_orders == self.ohc.cancelled_orders
+
+    def test_to_json(self):
+        filepath = 'test_order_history_collection.json'
+        self.ohc.to_json(filepath)
+        assert os.path.exists(filepath)
+        os.remove(filepath)

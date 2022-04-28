@@ -1,6 +1,9 @@
 """A module for order collection
 """
-
+import os
+import json
+import logging
+from typing import OrderedDict
 from quantstools.order.amount import Amount
 from .order import Order
 from .order_history import OrderHistory
@@ -133,3 +136,38 @@ class OrderHistoryCollection:
             return self
         else:
             return oc
+
+    def __add__(self, other):
+        assert isinstance(other, OrderHistoryCollection)
+        assert self.symbol.symbol == other.symbol.symbol
+        oc = OrderHistoryCollection(symbol=self.symbol)
+        oc._active_orders = self._active_orders.union(other._active_orders)
+        oc._done_orders = self._done_orders.union(other._done_orders)
+        oc._cancelled_orders = self._cancelled_orders.union(other._cancelled_orders)
+        return oc
+
+    def to_json(self, filepath='order_history_collection.json'):
+        with open(filepath, 'w') as f:
+            json.dump(self.serialize(), f)
+
+    def load_json(self, filepath='order_history_collection.json'):
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as f:
+                serialized_data = json.load(f)
+            oc = self.deserialize(serialized_data=serialized_data, inplace=False)
+            self = self + oc
+        else:
+            logging.warning(f"josn filepath = '{filepath}', does not exists")
+
+    def __str__(self) -> str:
+        s = "=============== ORDER HISTORY COLLECTION ===============\n"
+        s += "--------------- Done Orders ---------------\n"
+        for o in self.done_orders:
+            s += str(o) + "\n"
+        s += "--------------- Active Orders ---------------\n"
+        for o in self.active_orders:
+            s += str(o) + "\n"
+        s += "--------------- Cancelled Orders ---------------\n"
+        for o in self.cancelled_orders:
+            s += str(o) + "\n"
+        return s
