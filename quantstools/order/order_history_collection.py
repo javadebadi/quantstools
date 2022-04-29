@@ -49,6 +49,13 @@ class OrderHistoryCollection:
             else:
                 self.done_orders.add(order)
 
+    def __len__(self):
+        return len(self._active_orders) + len(self._done_orders) + len(self._cancelled_orders)
+
+    def __iter__(self):
+        for order in self._active_orders.union(self._done_orders):
+            yield order
+
     def add_order_history(self, order):
         if isinstance(order, OrderHistory):
             self._add_order_history(order)
@@ -150,12 +157,33 @@ class OrderHistoryCollection:
         with open(filepath, 'w') as f:
             json.dump(self.serialize(), f)
 
+    def to_text(self, filepath='order_history_collection.txt'):
+        with open(filepath, 'w') as f:
+            f.write(str(self))
+
+
+    def get_report(self):
+        s = " ==================== SUMMARY ====================\n"
+        s += "Order Status".ljust(20) + " | " + "#".ljust(6) + "\n"
+        s += "Done Orders".ljust(20) + " | " + f"{len(self._done_orders)}".ljust(6) + "\n"
+        s += "Active Orders".ljust(20) + " | " + f"{len(self._active_orders)}".ljust(6) + "\n"
+        s += "Cancelled Orders".ljust(20) + " | " + f"{len(self._cancelled_orders)}".ljust(6) + "\n"
+        s += "     -------------------------     \n"
+        s += f"Total Amount = {self.get_total_amount()}\n" 
+        s += f"Total Value = {self.get_total_value()}\n" 
+        s += f"Average Price = {self.get_avg_price()}\n"
+        return s
+
     def load_json(self, filepath='order_history_collection.json'):
+        logging.info("Checking to see whether json file exists")
         if os.path.exists(filepath):
+            logging.info(f"reading json file: {filepath}")
             with open(filepath, 'r') as f:
+                logging.info(f"Opened the json file to read")
                 serialized_data = json.load(f)
             oc = self.deserialize(serialized_data=serialized_data, inplace=False)
-            self = self + oc
+            self = self.__add__(oc)
+            return self
         else:
             logging.warning(f"josn filepath = '{filepath}', does not exists")
 
@@ -170,4 +198,5 @@ class OrderHistoryCollection:
         s += "--------------- Cancelled Orders ---------------\n"
         for o in self.cancelled_orders:
             s += str(o) + "\n"
+        s += self.get_report()
         return s
