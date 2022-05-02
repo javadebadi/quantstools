@@ -1,7 +1,24 @@
-"""A module for Symbols
+"""A module for Stock Symbols or Tickers
 """
 
 class Symbol:
+
+    """Class to define a Symbol or Ticker
+    
+    Example
+    -------
+    >>> symbol = Symbol('VRA-USDT', 9, 8, 12, 6)
+    >>> print(symbol)
+    VRA-USDT
+    >>> symbol.digits
+    9
+    >>> symbol.precision
+    8
+    >>> symbol.amount_digits
+    12
+    >>> symbol.amount_precision
+    6
+    """
 
     def __init__(
         self,
@@ -165,3 +182,8 @@ class Symbol:
 
     def __str__(self) -> str:
         return f'{self.symbol}'
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(verbose=True)
