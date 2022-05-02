@@ -36,11 +36,35 @@ class Symbol:
 
     @property
     def symbol(self) -> str:
+        """Returns symbol string
+        """
         return self._symbol
 
     @symbol.setter
     def symbol(self, symbol: str) -> None:
-        assert type(symbol) == str
+        """Property setter for symbol
+
+        The `symbol` attribute of a Symbol object must be string.
+        The property setter checks the value before setting the `symbol`
+        attribute. Currently it is required the type of `symbol` attribute
+        to be sting.
+
+        Parameters
+        ----------
+        symbol : str
+
+        Raises
+        ------
+        TypeError
+            Raises `TypeError` when the type of symbol argument is not
+            correct.
+
+        """
+        if type(symbol) != str:
+            raise TypeError(
+                "Expected symbol of type 'str'"
+                f" but got type '{symbol.__class__.__name__}'"
+            )
         self._symbol = symbol
 
     @property

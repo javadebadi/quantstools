@@ -14,8 +14,10 @@ class TestSymbol:
         assert s.amount_precision == 6
 
     def test_symbol_property_raises_error(self):
-        with pytest.raises(AssertionError) as exc_info:
+        message = "Expected symbol of type 'str' but got type 'int'"
+        with pytest.raises(TypeError) as exc_info:
             s = Symbol(6594, 12, 4, 12, 6)
+        assert exc_info.match(message)
 
     def test_symbol_eq(self):
         s0 = Symbol('BTC-USDT', 12, 4, 12, 6)
