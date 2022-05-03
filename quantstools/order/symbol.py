@@ -36,13 +36,13 @@ class Symbol:
 
     @property
     def symbol(self) -> str:
-        """Returns symbol string
+        """Returns the `symbol` property attribute
         """
         return self._symbol
 
     @symbol.setter
     def symbol(self, symbol: str) -> None:
-        """Property setter for symbol
+        """Property setter for `symbol`
 
         The `symbol` attribute of a Symbol object must be string.
         The property setter checks the value before setting the `symbol`
@@ -69,16 +69,17 @@ class Symbol:
 
     @property
     def digits(self) -> int:
-        """Returns the digits attribute"""
+        """Returns the `digits` property attribute"""
         return self._digits
 
     @digits.setter
     def digits(self, digits: int):
-        """
+        """Property setter for `digits`
 
         Parameters
         ----------
         digits : int
+            Maximum number of digits in price of a symbol
             
         Returns
         -------
@@ -87,13 +88,14 @@ class Symbol:
         Raises
         ------
         TypeError
+            Raises TypeError when type of digits parameter is not integer
         
         """
         if type(digits) == int:
             self._digits = digits
         else:
             raise TypeError(
-                f"Expected digits of type int"
+                f"Expected digits of type 'int'"
                 f" but got type '{digits.__class__.__name__}'"
                 )
 
@@ -199,13 +201,24 @@ class Symbol:
         return d
 
     def __eq__(self, other) -> bool:
-        if self.symbol == other.symbol:
+        if not isinstance(other, Symbol):
+            return False
+        if (
+            self.symbol == other.symbol &
+            self.digits == other.digits &
+            self.precision == other.precision &
+            self.amount_digits == other.amount_digits &
+            self.amount_precision == other.amount_precision
+        ):
             return True
         else:
             return False
 
     def __str__(self) -> str:
         return f'{self.symbol}'
+
+    def __repr__(self) -> str:
+        return f"Symbol('{self.symbol}', {self.digits}, {self.precision}, {self.amount_digits}, {self.amount_precision})"
 
 
 if __name__ == '__main__':
