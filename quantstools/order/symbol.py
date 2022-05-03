@@ -53,12 +53,15 @@ class Symbol:
         ----------
         symbol : str
 
+        Returns
+        -------
+        None
+
         Raises
         ------
         TypeError
             Raises `TypeError` when the type of symbol argument is not
             correct.
-
         """
         if type(symbol) != str:
             raise TypeError(
@@ -88,7 +91,7 @@ class Symbol:
         Raises
         ------
         TypeError
-            Raises TypeError when type of digits parameter is not integer
+            Raises TypeError when type of digits parameter is not integer.
         
         """
         if type(digits) == int:
@@ -101,16 +104,17 @@ class Symbol:
 
     @property
     def amount_digits(self) -> int:
-        """Returns the amount_digits attribute"""
+        """Returns the `amount_digits` property attribute"""
         return self._amount_digits
 
     @amount_digits.setter
     def amount_digits(self, amount_digits: int):
-        """
+        """Property setter for `amount_digits` attribute
 
         Parameters
         ----------
         amount_digits : int
+            Maximum number of digits for amount of symbol.
             
         Returns
         -------
@@ -119,13 +123,15 @@ class Symbol:
         Raises
         ------
         TypeError
+            Raises type error when type of `amount_digits` parameter is
+            not integer.
         
         """
         if type(amount_digits) == int:
             self._amount_digits = amount_digits
         else:
             raise TypeError(
-                f"Expected digits of type int"
+                f"Expected amount_digits of type 'int'"
                 f" but got type '{amount_digits.__class__.__name__}'"
                 )
 
