@@ -48,6 +48,10 @@ class TestSymbol:
             'amount_precision': 6,
             }
 
+    def test___str__(self):
+        s = Symbol('BTC-USDT', 12, 4, 12, 6)
+        assert str(s) == 'BTC-USDT'
+
     def test___repr__(self):
         s = Symbol('BTC-USDT', 12, 4, 12, 6)
         assert repr(s) == "Symbol('BTC-USDT', 12, 4, 12, 6)"

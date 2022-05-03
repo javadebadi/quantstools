@@ -210,10 +210,10 @@ class Symbol:
         if not isinstance(other, Symbol):
             return False
         if (
-            self.symbol == other.symbol &
-            self.digits == other.digits &
-            self.precision == other.precision &
-            self.amount_digits == other.amount_digits &
+            self.symbol == other.symbol and
+            self.digits == other.digits and
+            self.precision == other.precision and
+            self.amount_digits == other.amount_digits and
             self.amount_precision == other.amount_precision
         ):
             return True
