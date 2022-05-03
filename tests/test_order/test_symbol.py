@@ -19,7 +19,19 @@ class TestSymbol:
             s = Symbol(6594, 12, 4, 12, 6)
         assert exc_info.match(message)
 
-    def test_symbol_eq(self):
+    def test_digits_property_raises_error(self):
+        message = "Expected digits of type 'int' but got type 'str'"
+        with pytest.raises(TypeError) as exc_info:
+            s = Symbol('BTC-USDT', '12', 4, 12, 6)
+        assert exc_info.match(message)
+
+    def test_amount_digits_property_raises_error(self):
+        message = "Expected amount_digits of type 'int' but got type 'str'"
+        with pytest.raises(TypeError) as exc_info:
+            s = Symbol('BTC-USDT', 12, 4, '12', 6)
+        assert exc_info.match(message)
+
+    def test___eq__(self):
         s0 = Symbol('BTC-USDT', 12, 4, 12, 6)
         s1 = Symbol('BTC-USDT', 12, 4, 12, 6)
         s2 = Symbol('ETH-USDT', 12, 4, 12, 6)
@@ -35,3 +47,7 @@ class TestSymbol:
             'amount_digits': 12,
             'amount_precision': 6,
             }
+
+    def test___repr__(self):
+        s = Symbol('BTC-USDT', 12, 4, 12, 6)
+        assert repr(s) == "Symbol('BTC-USDT', 12, 4, 12, 6)"
