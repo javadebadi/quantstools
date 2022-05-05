@@ -145,7 +145,8 @@ class Symbol:
         """Setter for the precision property attribute
 
         The `precision` attribute determines the maximum number of ditits
-        after decimal points. It must be a positive integer.
+        after decimal points for price of a symbol. It must be a positive
+        integer.
 
         Parameters
         ----------
@@ -178,11 +179,16 @@ class Symbol:
 
     @amount_precision.setter
     def amount_precision(self, amount_precision: int):
-        """
+        """Setter for the amoun_precision property attribute
+
+        The `amount_precision` attribute determines the maximum number of
+        ditits after decimal points for amount of a symbol. It must be a
+        positive integer.
 
         Parameters
         ----------
-        precision : int
+        amount_precision : int
+
 
         Returns
         -------
@@ -191,14 +197,15 @@ class Symbol:
         Raises
         ------
         TypeError
-
+            Raises type error when type of `amount_precision` parameter is
+            not integer.
         
         """
         if type(amount_precision) == int:
             self._amount_precision = amount_precision
         else:
             raise TypeError(
-                f"Expected amount_precision of type int"
+                f"Expected amount_precision of type 'int'"
                 f" but got type '{amount_precision.__class__.__name__}'"
                 )
 
