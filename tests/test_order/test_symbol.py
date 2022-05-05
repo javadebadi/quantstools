@@ -31,6 +31,12 @@ class TestSymbol:
             s = Symbol('BTC-USDT', 12, 4, '12', 6)
         assert exc_info.match(message)
 
+    def test_precision_property_raises_error(self):
+        message = "Expected precision of type 'int' but got type 'str'"
+        with pytest.raises(TypeError) as exc_info:
+            s = Symbol('BTC-USDT', 12, '4', 12, 6)
+        assert exc_info.match(message)
+
     def test___eq__(self):
         s0 = Symbol('BTC-USDT', 12, 4, 12, 6)
         s1 = Symbol('BTC-USDT', 12, 4, 12, 6)

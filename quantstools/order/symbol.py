@@ -137,16 +137,20 @@ class Symbol:
 
     @property
     def precision(self) -> int:
-        """Returns the precision attribute"""
+        """Returns the precision property attribute"""
         return self._precision
 
     @precision.setter
     def precision(self, precision: int):
-        """
+        """Setter for the precision property attribute
+
+        The `precision` attribute determines the maximum number of ditits
+        after decimal points. It must be a positive integer.
 
         Parameters
         ----------
         precision : int
+
 
         Returns
         -------
@@ -155,14 +159,15 @@ class Symbol:
         Raises
         ------
         TypeError
-
+            Raises type error when type of `precision` parameter is
+            not integer.
         
         """
         if type(precision) == int:
             self._precision = precision
         else:
             raise TypeError(
-                f"Expected precision of type int"
+                f"Expected precision of type 'int'"
                 f" but got type '{precision.__class__.__name__}'"
                 )
 
