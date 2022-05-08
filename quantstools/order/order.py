@@ -7,6 +7,44 @@ from .symbol import Symbol
 
 class Order:
 
+    """Class to represent Order objects.
+
+    The Order objects have the following attributes:
+
+    Attributes
+    ----------
+    symbol : Symbol
+        The symbol for which Order object is created.
+    side : str
+        `side` attribute determines whether the order is a sell order or 
+        a buy order.
+    price : Price
+        `price` attribute is a Price object which determines the price
+        of order with exact given precision and number of digits
+    amount : Amount
+        `amount` attribte is a Amount object which determines the amount
+        of order or size of the order. It determines the number of quantity
+        which we want to sell or buy. Similar to `price` it has the exact
+        precision and digits of the amount.
+    type_ : str
+        `type_` attribute determines the type of the order. It can be a limit
+        order or market order.
+
+    Example
+    -------
+    >>> symbol = Symbol('BTC-USDT', 12, 6, 12, 6)
+    >>> price = Price(40000.0, symbl.digits, symbol.precision)
+    >>> amount = Amount(1.0, symbl.amount_digits, symbol.amount_precision)
+    >>> order = Order(
+        symbol=symbol,
+        price=price,
+        amount=amount,
+        side='BUY',
+        type_='LIMIT',
+        )
+
+    """
+
     def __init__(
         self,
         symbol: Symbol,
@@ -27,7 +65,7 @@ class Order:
         return self._symbol
 
     @symbol.setter
-    def symbol(self, symbol: str) -> None:
+    def symbol(self, symbol: Symbol) -> None:
         assert isinstance(symbol, Symbol)
         self._symbol = symbol
 
@@ -112,3 +150,8 @@ class Order:
 
     def __str__(self) -> str:
         return f'{self.amount.get_amount()} | {self.get_price()} | {self.get_value()}'
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(verbose=True)
