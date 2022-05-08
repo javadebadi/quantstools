@@ -16,11 +16,17 @@ class TestOrder(unittest.TestCase):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))
         assert o.symbol == self.symbol
 
-    def test_symbol_property_raises_assertion_error(self):
-        with pytest.raises(AssertionError) as exc_info:
+    def test_symbol_property_raises_type_error(self):
+
+        message = "Expected symbol of type 'Symbol' but got of type 'list'"
+        with pytest.raises(TypeError) as exc_info:
             Order([], 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))
-        with pytest.raises(AssertionError) as exc_info:
+        exc_info.match(message)
+
+        message = "Expected symbol of type 'Symbol' but got of type 'int'"
+        with pytest.raises(TypeError) as exc_info:
             Order(12, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))
+        exc_info.match(message)
 
     def test_side_property(self):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))

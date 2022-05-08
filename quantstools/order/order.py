@@ -62,11 +62,34 @@ class Order:
 
     @property
     def symbol(self) -> Symbol:
+        """Returns the symbol property attribute.
+        """
         return self._symbol
 
     @symbol.setter
     def symbol(self, symbol: Symbol) -> None:
-        assert isinstance(symbol, Symbol)
+        """Setter property for symbol attribute.
+
+        Parameters
+        ----------
+        symbol : Symbol
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        TypeError
+            if type of the `symbol` parameter is not Symbol a TypeError
+            will be raised.
+        
+        """
+        if not isinstance(symbol, Symbol):
+            raise TypeError(
+                "Expected symbol of type 'Symbol' "
+                f"but got of type '{symbol.__class__.__name__}'"
+                )
         self._symbol = symbol
 
     @property
