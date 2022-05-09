@@ -44,9 +44,11 @@ class TestOrder(unittest.TestCase):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))
         assert o.price == Price(0.12, 5, 4)
 
-    def test_price_property_raises_assertion_error(self):
-        with pytest.raises(AssertionError) as exc_info:
-            Order(self.symbol, 'BUY', 0.12, '0.05')
+    def test_price_property_raises_type_error(self):
+        message = "Expected price of type 'Price' but got of type 'str'"
+        with pytest.raises(TypeError) as exc_info:
+            Order(self.symbol, 'BUY', '0.12', Amount(0.05, 4,2))
+        exc_info.match(message)
 
     def test_amount_property(self):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))

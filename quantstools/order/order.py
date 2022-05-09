@@ -126,11 +126,35 @@ class Order:
 
     @property
     def price(self) -> Price:
+        """Returns the price property attribute
+        """
         return self._price
 
     @price.setter
-    def price(self, price) -> None:
-        assert isinstance(price, Price)
+    def price(self, price: Price) -> None:
+        """Setter for price property attribute
+
+        Parameters
+        ----------
+        price : Price
+            The parameter to set as the price attribute. It must be a Price
+            object.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        TypeError
+            Raises TypeError when the price parameter is not a Price object.
+
+        """
+        if not isinstance(price, Price):
+            raise TypeError(
+                "Expected price of type 'Price' "
+                f"but got of type '{price.__class__.__name__}'"
+                )
         self._price = price
 
     @property
