@@ -94,11 +94,34 @@ class Order:
 
     @property
     def side(self) -> str:
+        """Returns the side property attribute
+        """
         return self._side
 
     @side.setter
     def side(self, side: str) -> None:
-        assert side in ['BUY', 'SELL']
+        """Setter for side property attribute
+
+        Parameters
+        ----------
+        side : str
+            The parameter to set for side property. It must be either 'SELL'
+            or 'BUY'
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            Raises ValueError when the `side` is not 'BUY' or 'SELL'
+        """
+        if side not in ['BUY', 'SELL']:
+            raise ValueError(
+                "The side attribute must be either 'SELL' or 'BUY' "
+                f"but got the value '{side}'"
+                )
         self._side = side
 
     @property

@@ -34,11 +34,11 @@ class TestOrder(unittest.TestCase):
         o = Order(self.symbol, 'SELL', Price(0.12, 5, 4), Amount(0.05, 4,2))
         assert o.side == 'SELL'
 
-    def test_side_property_raises_assertion_error(self):
-        with pytest.raises(AssertionError) as exc_info:
-            Order(self.symbol, 'xyz', Price(0.12, 5, 4), Amount(0.05, 4,2))
-        with pytest.raises(AssertionError) as exc_info:
-            Order(self.symbol, None, Price(0.12, 5, 4), Amount(0.05, 4,2))
+    def test_side_property_raises_value_error(self):
+        message = "The side attribute must be either 'SELL' or 'BUY' but got the value 'ok'"
+        with pytest.raises(ValueError) as exc_info:
+            Order(self.symbol, 'ok', Price(0.12, 5, 4), Amount(0.05, 4,2))
+        exc_info.match(message)
 
     def test_price_property(self):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))
