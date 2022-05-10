@@ -1,4 +1,8 @@
 *.code-workspace
+*.txt
+*.json
+*.xlsx
+*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
