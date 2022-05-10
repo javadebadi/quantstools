@@ -78,8 +78,14 @@ class Amount(NumberString):
         )
 
     def get_amount(self) -> str:
-        """Returns the Amount as string"""
+        """Returns the Amount as a tring
+        """
         return super().get_number()
+
+    def get_numeric_amount(self) -> float:
+        """Returns the Amount as a float
+        """
+        return super().get_numeric_number()
         
     def __lt__(self, other):
         return self.number < other.number

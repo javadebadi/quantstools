@@ -190,6 +190,11 @@ class NumberString:
         decimal_part = str(self.number).split('.')[1][:self.precision].ljust(self.precision, '0')
 
         return (int_part + '.' + decimal_part)
+
+    def get_numeric_number(self) -> float:
+        """Returns the numeric value of number property
+        """
+        return self.number
         
     def __lt__(self, other):
         return self.number < other.number

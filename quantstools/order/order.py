@@ -223,51 +223,227 @@ class Order:
                 )
         self._type_ = type_
 
-    def get_price(self, numeric=False) -> Price:
+    def get_price(self, numeric: bool = False) -> str:
+        """Returns the price of the order as string or float
+
+        Parameters
+        ----------
+        numeric : bool
+            Default value is False.
+            Determines wheter the return result is numeric or string.
+
+        Returns
+        -------
+        str or float
+        """
         if numeric is False:
             return self.price.get_price()
         else:
-            return float(self.get_price())
+            return self.price.get_numeric_price()
 
-    def get_amount(self, numeric=False):
+    def get_amount(self, numeric: bool = False):
+        """Returns the amount of the order as string or float
+
+        Parameters
+        ----------
+        numeric : bool
+            Default value is False.
+            Determines wheter the return result is numeric or string.
+
+        Returns
+        -------
+        str or float
+        """
         if numeric is False:
             return self.amount.get_amount()
         else:
-            return self.get_numeric_amount()
+            return self.amount.get_numeric_amount()
 
-    def get_numeric_amount(self) -> float:
-        if self.side == 'BUY':
-            return abs(float(self.amount.get_number()))
-        elif self.side == 'SELL':
-            return - abs(float(self.amount.get_number()))
 
-    def get_value(self, rounding=4) -> float:
-        return round(self.get_numeric_amount() * float(self.get_price()), rounding)
+    def get_numeric_amount(self, signed: bool = True) -> float:
+        """Returns the (signed) numeric amount of the order.
+        
+        Parameters
+        ----------
+        signed : bool
+            Default value is True.
+            Determine wheter the returned amount is signed or not. When the 
+            amount is signed for SELL orders the amount is negative and for
+            BUY orders it is positive. When signed is set to False, then
+            always the positive value for amount will be returned.
+
+        Returns
+        -------
+            : float
+            signed or not-signed amount of the order
+        """
+        num = self.get_amount(numeric=True)
+        if signed is True:
+            if self.side == 'BUY':
+                return abs(num)
+            elif self.side == 'SELL':
+                return - abs(num)
+        else:
+            return abs(num)
+
+    def get_value(self, rounding: int = 4, signed=True) -> float:
+        """Returns total value of the order.
+        
+        Parameters
+        ----------
+        rounding : int
+            Default value is 4.
+            Determines the amount of rounding of the total value of the
+            order.
+
+        signed : bool
+            Default value is True.
+            Determine wheter the returned value is signed or not.
+
+        Returns
+        -------
+            : float
+            Returns total value of the order.
+        """
+        return round(
+            self.get_numeric_amount(signed = signed) *\
+                self.get_price(numeric=True)
+                ,
+                rounding
+                )
 
     def to_dict(self, numeric=False) -> dict:
+        """Returns a dictionary representation of order.
+        
+        The method returns the dictionary representation of the order.
+        """
         d = {}
         d['symbol'] = self.symbol.symbol
         d['side'] = self.side
-        d['price'] = self.get_price()
-        d['amount'] = self.amount.get_amount()
-        if numeric is True:
-            d['price'] = float(d['price'])
-            d['amount'] = float(d['amount'])
+        d['price'] = self.get_price(numeric=numeric)
+        d['amount'] = self.get_amount(numeric=numeric)
         d['type_'] = self.type_
         return d
 
-    def serialize(self, keys=['symbol', 'side', 'amount', 'price']) -> dict:
+    def serialize(
+        self,
+        keys: list = None
+        ) -> dict:
+        """Returns the serialized version of Order object.
+        
+        The returned dictionary is used to consume in API request.
+
+        Parameters
+        ----------
+        keys : list
+            Default value is None.
+            The `keys` parameter is a list of attributes that is needed to
+            be serialized.
+
+        Returns
+        -------
+            : dict
+            Returns the serialized data of Order
+
+        """
+        if keys is None:
+            keys = ['symbol', 'side', 'amount', 'price']
+        if self.type_ == 'MARKET':
+            raise NotImplementedError(
+                "for Order of type_ = 'MARKET' the serialize"
+                " method is not implemented"
+                )
         d = self.to_dict(numeric=False)
         return dict((k, d[k]) for k in keys if k in d)
 
+    def serialize_full_depth(self) -> dict:
+        """Returns the full depth serialized Order data.
+
+        It serialize the Order attributes and it also serialized the `symbol`
+        property of the Order by its own serialize_full_depth method.
+
+        Returns
+        -------
+            : dict
+            Fully serialized in depth Order object and its attributes
+
+        """
+        d = {}
+        d['symbol'] = self.symbol.serialize_full_depth()
+        d['side'] = self.side
+        d['price'] = self.get_price(numeric=True)
+        d['amount'] = self.get_amount(numeric=True)
+        d['type_'] = self.type_
+        return d
+
+    def deserialize(self, serialized_data: dict):
+        """Deserilize serialized_data to Order object.
+
+        The method deserializes data and sets the Order object attributes 
+        based on the data.
+
+        Parameters
+        ----------
+        serialized_data : dict
+            The serialized data which is probably produced by the
+            `serialize_full_depth` method of Order object.
+
+        Returns
+        -------
+        self : Order
+            Returns this object (self) after setting its attributes using
+            serialized data.
+        """
+        self.symbol = self.symbol.deserialize(serialized_data['symbol'])
+        self.side = serialized_data['side']
+        self.type_ = serialized_data['type_']
+        self.price = Price(
+            serialized_data['price'],
+            self.symbol.digits,
+            self.symbol.precision
+            )
+        self.amount = Amount(
+            serialized_data['amount'],
+            self.symbol.amount_digits,
+            self.symbol.amount_precision
+            )
+        return self
+
     def __eq__(self, other) -> bool:
-        if self.to_dict() == other.to_dict():
+        """Overloads == operator for Order
+
+        Two Order objects are equal if and only if all of their attributes
+        are equal.
+
+        Returns
+            : bool
+        """
+        if (
+            self.symbol == other.symbol and
+            self.side == other.side and
+            self.amount == other.amount and 
+            self.price == other.price and 
+            self.type_ == other.type_
+            ):
             return True
         else:
             return False
 
     def __str__(self) -> str:
-        return f'{self.amount.get_amount()} | {self.get_price()} | {self.get_value()}'
+        s = '| '
+        s += self.side.ljust(4) + '| '
+        s += str(self.get_numeric_amount()).\
+            rjust(self.symbol.digits + 2) + '|'
+        s += self.get_price(numeric=False).\
+            rjust(self.symbol.amount_digits + 2) + '|'
+        s += str(self.get_value()).rjust(8) + '|'
+        return s
+
+    def to_text(self) -> str:
+        return str(self)
+
+    def __repr__(self) -> str: # TODO: write a test and update Price and Amount by defining __repr__ method
+        return f"Order({repr(self.symbol)}, '{self.side}', {repr(self.price)}, {repr(self.amount)}, '{self.type_}')"
 
 
 if __name__ == '__main__':

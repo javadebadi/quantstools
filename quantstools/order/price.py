@@ -84,6 +84,11 @@ class Price(NumberString):
     def get_price(self) -> str:
         """Returns the price as string"""
         return super().get_number()
+
+    def get_numeric_price(self) -> float:
+        """Returns the price as number
+        """
+        return super().get_numeric_number()
         
     def __lt__(self, other):
         return self.number < other.number
