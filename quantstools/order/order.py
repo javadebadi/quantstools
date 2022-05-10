@@ -164,7 +164,7 @@ class Order:
         return self._amount
 
     @amount.setter
-    def amount(self, amount) -> None:
+    def amount(self, amount: Amount) -> None:
         """Setter for amount property attribute
 
         Parameters
@@ -193,11 +193,34 @@ class Order:
 
     @property
     def type_(self) -> str:
+        """Returns the type_ property attribute
+        """
         return self._type_
 
     @type_.setter
-    def type_(self, type_) -> None:
-        assert type_ in ['LIMIT', 'MARKET']
+    def type_(self, type_: str) -> None:
+        """Setter for type_ property attribute
+
+        Parameters
+        ----------
+        type_ : str
+            The parameter to set for type_ property. It must be either 'LIMIT'
+            or 'MARKET'
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            Raises ValueError when the `side` is not 'LIMIT' or 'MARKET'
+        """
+        if type_ not in ['LIMIT', 'MARKET']:
+            raise ValueError(
+                "The type_ attribute must be either 'LIMIT' or 'MARKET' "
+                f"but got the value '{type_}'"
+                )
         self._type_ = type_
 
     def get_price(self, numeric=False) -> Price:

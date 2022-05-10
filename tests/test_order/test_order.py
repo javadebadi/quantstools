@@ -66,9 +66,11 @@ class TestOrder(unittest.TestCase):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2), 'MARKET')
         assert o.type_ == 'MARKET'
 
-    def test_type__property_raises_assertion_error(self):
-        with pytest.raises(AssertionError) as exc_info:
+    def test_type__property_raises_value_error(self):
+        message = "The type_ attribute must be either 'LIMIT' or 'MARKET' but got the value 'xyz'"
+        with pytest.raises(ValueError) as exc_info:
             Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2), 'xyz')
+        exc_info.match(message)
 
     def test_to_dict(self):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2), 'LIMIT')
