@@ -218,6 +218,31 @@ class Symbol:
         d['amount_precision'] = self.amount_precision
         return d
 
+    def serialize(
+        self,
+        keys=[
+            'symbol',
+            'digits',
+            'precision',
+            'amount_digits',
+            'amount_precision',
+            ]
+        ) -> dict: # TODO: write test
+        d = self.to_dict()
+        return dict((k, d[k]) for k in keys if k in d)
+
+    def serialize_full_depth(self) -> dict: # TODO: write test
+        return self.serialize()
+
+    def deserialize(self, serialized_symbol): # TODO: write test
+        self.symbol = serialized_symbol['symbol']
+        self.digits = serialized_symbol['digits']
+        self.precision = serialized_symbol['precision']
+        self.amount_digits = serialized_symbol['amount_digits']
+        self.amount_precision = serialized_symbol['amount_precision']
+        return self
+
+
     def __eq__(self, other) -> bool:
         if not isinstance(other, Symbol):
             return False
