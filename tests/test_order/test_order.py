@@ -54,9 +54,11 @@ class TestOrder(unittest.TestCase):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2))
         assert o.amount == Amount(0.05, 4,2)
 
-    def test_amount_property_raises_assertion_error(self):
-        with pytest.raises(AssertionError) as exc_info:
-            Order(self.symbol, 'BUY', Price(0.12, 5, 4), 0.05)
+    def test_amount_property_raises_type_error(self):
+        message = "Expected amount of type 'Amount' but got of type 'str'"
+        with pytest.raises(TypeError) as exc_info:
+            Order(self.symbol, 'BUY', Price(0.12, 5, 4), '0.05')
+        exc_info.match(message)
 
     def test_type__property(self):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2), 'LIMIT')
@@ -66,7 +68,7 @@ class TestOrder(unittest.TestCase):
 
     def test_type__property_raises_assertion_error(self):
         with pytest.raises(AssertionError) as exc_info:
-            Order(self.symbol, 'BUY', Price(0.12, 5, 4), 0.05, 'xyz')
+            Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2), 'xyz')
 
     def test_to_dict(self):
         o = Order(self.symbol, 'BUY', Price(0.12, 5, 4), Amount(0.05, 4,2), 'LIMIT')

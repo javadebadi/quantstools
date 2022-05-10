@@ -147,7 +147,7 @@ class Order:
         Raises
         ------
         TypeError
-            Raises TypeError when the price parameter is not a Price object.
+            Raises TypeError when the `price` parameter is not a Price object.
 
         """
         if not isinstance(price, Price):
@@ -159,11 +159,36 @@ class Order:
 
     @property
     def amount(self) -> Amount:
+        """Returns the amount property attribute
+        """
         return self._amount
 
     @amount.setter
     def amount(self, amount) -> None:
-        assert isinstance(amount, Amount)
+        """Setter for amount property attribute
+
+        Parameters
+        ----------
+        amount : Amount
+            The parameter to set as the amount attribute. It must be an Amount
+            object.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        TypeError
+            Raises TypeError when the `amount` parameter is not an Amount
+            object.
+
+        """
+        if not isinstance(amount, Amount):
+            raise TypeError(
+                "Expected amount of type 'Amount' "
+                f"but got of type '{amount.__class__.__name__}'"
+                )
         self._amount = amount
 
     @property
