@@ -14,6 +14,18 @@ class TestOrderCollection(unittest.TestCase):
     def setUp(self) -> None:
         self.symbol = Symbol('ETH-BTC', 5, 4, 4, 2)
 
+    def test_order_collection___init__(self):
+        symbol = Symbol('ETH-BTC', 5, 4, 4, 2)
+        oc = OrderCollection(symbol)
+        assert oc.symbol == symbol
+        assert oc._orders == []
+
+    def test_order_collection_symbol_property_raise_type_error(self):
+        message = f"Expected symbol of type 'Symbol' but got of type 'str'"
+        with pytest.raises(TypeError) as exc_info:
+            oc = OrderCollection('ETH-BTC')
+        assert exc_info.match(message)
+
     def test_add_order(self) -> None:
         oc = OrderCollection(self.symbol)
         o = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
