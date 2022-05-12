@@ -1,4 +1,4 @@
-"""A module to manage orders
+"""A module to model data for orders 
 """
 
 from .price import Price
@@ -440,6 +440,12 @@ class Order:
         return s
 
     def to_text(self) -> str:
+        """Returns an string representation of Order.
+
+        Returns
+        -------
+            : str
+        """
         return str(self)
 
     def __repr__(self) -> str: # TODO: write a test and update Price and Amount by defining __repr__ method

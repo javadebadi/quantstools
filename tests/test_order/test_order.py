@@ -151,3 +151,6 @@ class TestOrderTestCase(unittest.TestCase):
 
     def test___str__(self):
         assert str(self.o) == '| SELL|          -0.05|        0.1200|  -0.006|'
+
+    def test_to_text(self):
+        assert self.o.to_text() == '| SELL|          -0.05|        0.1200|  -0.006|'
