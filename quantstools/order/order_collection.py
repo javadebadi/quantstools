@@ -140,12 +140,15 @@ class OrderCollection:
             return None
 
     def pop_last(self) -> Order:
-        try:
-            return self._orders.pop()
-        except IndexError:
-            return None
+        """Removes and returns the last order from the collection.
+        
+        Removes and returns the last order from the collection. If there 
+        isn't any order in the collection, it return None.
 
-    def remove_last_order(self) -> Order:
+        Returns
+        -------
+            : Order or None
+        """
         try:
             return self._orders.pop()
         except IndexError:
