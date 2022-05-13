@@ -84,8 +84,27 @@ class OrderCollection:
         self,
         order: Order
         ):
-        assert isinstance(order, Order)
-        assert order.symbol == self.symbol
+        """Adds give order to the collection.
+        
+        Raises
+        ------
+        TypeError:
+            Raises TypeError when the `order` parameter is not of type Order.
+        ValueError:
+            Raises ValueError when the `symbol` of the `order` argument is not
+            same as the `self.symbol` attribute.
+        """
+        if not isinstance(order, Order):
+            raise TypeError(
+                "Expecd order of type 'Order' "
+                f"but got of type '{order.__class__.__name__}'"
+                )
+        if not order.symbol == self.symbol:
+            raise ValueError(
+                f"Expected the give order's symbol to be "
+                f"'{self.symbol.symbol}' "
+                f"but got an order with symbol = '{order.symbol.symbol}'"
+            )
         self._orders.append(order)
 
     def reset(self):

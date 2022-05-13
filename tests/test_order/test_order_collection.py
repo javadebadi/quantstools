@@ -37,13 +37,21 @@ class TestOrderCollection(unittest.TestCase):
         assert len(oc._orders) == 2
         assert oc.orders[1] == o
 
-    def test_add_order_raises_assertion_error(self):
+    def test_add_order_raises_type_error(self):
+        oc = OrderCollection(self.symbol)
+        o = Order(Symbol('ETH-BTC', 12, 4, 12, 6), 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        message = "Expecd order of type 'Order' but got of type 'int'"
+        with pytest.raises(TypeError) as exc_info:
+            oc.add_order(12)
+        exc_info.match(message)
+
+    def test_add_order_raises_value_error(self):
         oc = OrderCollection(self.symbol)
         o = Order(Symbol('BTC-USDT', 12, 4, 12, 6), 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
-        with pytest.raises(AssertionError) as exc_info:
-            oc.add_order(Order)
-        with pytest.raises(AssertionError) as exc_info:
-            oc.add_order(12)
+        message = "Expected the give order's symbol to be 'ETH-BTC' but got an order with symbol = 'BTC-USDT'"
+        with pytest.raises(ValueError) as exc_info:
+            oc.add_order(o)
+        exc_info.match(message)
 
     def test_reset(self):
         oc = OrderCollection(self.symbol)
