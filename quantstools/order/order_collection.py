@@ -85,6 +85,11 @@ class OrderCollection:
         order: Order
         ):
         """Adds give order to the collection.
+
+        Parameters
+        ----------
+        order : Order
+            An Order object to add into the collection.
         
         Raises
         ------
@@ -93,6 +98,10 @@ class OrderCollection:
         ValueError:
             Raises ValueError when the `symbol` of the `order` argument is not
             same as the `self.symbol` attribute.
+
+        Returns
+        -------
+        None
         """
         if not isinstance(order, Order):
             raise TypeError(
@@ -108,9 +117,23 @@ class OrderCollection:
         self._orders.append(order)
 
     def reset(self):
+        """Resets the collection to initial state.
+        
+        Makes the collection empty of any orders and reset any other 
+        settings to its initial statae.
+        """
         self._orders = []
 
     def pop_first(self) -> Order:
+        """Removes and returns the first order from the collection.
+        
+        Removes and returns the first order from the collection. If there 
+        isn't any order in the collection, it return None.
+
+        Returns
+        -------
+            : Order or None
+        """
         try:
             return self._orders.pop(0)
         except IndexError:

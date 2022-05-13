@@ -59,7 +59,21 @@ class TestOrderCollection(unittest.TestCase):
         oc.add_order(o)
         assert len(oc._orders) == 1
         oc.reset()
+        assert oc.orders == []
         assert len(oc._orders) == 0
+
+    def test_pop_first(self):
+        oc = OrderCollection(self.symbol)
+        o1 = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o2 = Order(self.symbol, 'SELL', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        oc.add_order(o1)
+        oc.add_order(o2)
+        assert len(oc.orders) == 2
+        assert oc.pop_first() == o1
+        assert len(oc.orders) == 1
+        assert oc.pop_first() == o2
+        assert len(oc.orders) == 0
+        assert oc.pop_first() is None
 
     def test_remove_last_order(self) -> None:
         oc = OrderCollection(self.symbol)
