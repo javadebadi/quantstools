@@ -6,6 +6,7 @@ from .order import Order
 from .price import Price
 from .amount import Amount
 from .symbol import Symbol
+from typing import List
 
 class OrderCollection:
 
@@ -83,7 +84,7 @@ class OrderCollection:
     def add_order(
         self,
         order: Order
-        ):
+        ) -> None:
         """Adds give order to the collection.
 
         Parameters
@@ -116,7 +117,7 @@ class OrderCollection:
             )
         self._orders.append(order)
 
-    def reset(self):
+    def reset(self) -> None:
         """Resets the collection to initial state.
         
         Makes the collection empty of any orders and reset any other 
@@ -154,11 +155,50 @@ class OrderCollection:
         except IndexError:
             return None
 
-    def get_total_value(self) -> float:
-        return sum(order.get_value() for order in self._orders)
+    def get_total_value(self, signed: bool = True) -> float:
+        """Returns the sum of value of all orders in the collection.
+
+        The total value is negative when the total value of selled stocks
+        is bigger than total value of buyed stockes. Roughly it means the 
+        amount of money spent is less than the amount of gained money.
+
+        The positive total value means the amount of money spent is bigger
+        than the amount of money that is gained.
+
+        positve total value <-> SPENT > GAINED
+        negative total value <-> SPENT < GAINED
+
+        The method uses Python's sum method to sum result of .get_value()
+        method of order objects insided the collection.
+
+        Parameters
+        ----------
+        signed : bool
+            The signed argument must always be True.
+
+        Raises
+        ------
+        AssertionError
+            if the `signed` parameter is not True raises AssertionError
+
+        """
+        assert signed is True
+        return sum(order.get_value(signed=signed) for order in self._orders)
+
+    def get_total_gain(self) -> float:
+        """Returns net gain (net money) from collection.
+
+        This values is just the same as tota_value multiplied by -1.
+        Returns
+        -------
+            : float
+            net gain from all orders
+
+        """
+        return -1 * self.get_total_value()
 
     def get_total_amount(self) -> float:
-        return sum(float(order.amount.get_amount()) for order in self._orders)
+        return sum(order.get_numeric_amount(signed=True) for order in self._orders)
 
     def get_avg_price(self) -> float:
         if not self._orders:
@@ -168,17 +208,63 @@ class OrderCollection:
             p = self.get_total_value()/self.get_total_amount()
         return float(Price(p, price.digits, price.precision).get_price())
 
-    def get_orders_list_of_dict(self, numeric=False) -> list:
+    def get_orders_list_of_dict(self, numeric=False) -> List[dict]:
+        """Returns list of orders dictionaries
+
+        The method loops over collection items and returns a list where each
+        item is a dictionary which is produced using the Order.to_dict() method of
+        corresponding order object.
+
+        Parameters
+        ----------
+        numeric : bool
+            Default value is False.
+            The argument is passed to Order.to_dict() `numeric` parameter as
+            argument.
+
+        Returns
+        -------
+            : List[dict]
+            Returns list of dictionaries of all orders in the collection.
+
+        """
         return [order.to_dict(numeric=numeric) for order in self._orders]
 
-    def get_report(self):
+    def get_report(self) -> str:
+        """Returns a report of the collection.
+
+        It returns a summary of the collection status.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        s : str
+            String denoting the status of the collection as a report.
+
+        """
         s = "========== Order Collection Report ==========\n"
-        s += f"Number of orders = {len(self)}\n"
+        s += f"# of orders   = {len(self)}\n"
         s += f"Average Price = {self.get_avg_price()}\n"
-        s += f"Total Value = {self.get_total_value()}\n"
+        s += f"Total Value   = {self.get_total_value()}\n"
+        s += f"Total Gain    = {self.get_total_gain()}\n"
         return s
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """Returns number of orders in the collection
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+            : int
+            Number of order objects in the collection.
+
+        """
         return len(self._orders)
 
     def serialize(self) -> list:

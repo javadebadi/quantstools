@@ -101,6 +101,9 @@ class TestCaseOrderCollection(unittest.TestCase):
     def test_get_total_value(self) -> None:
         assert self.oc.get_total_value() == pytest.approx(60000)
 
+    def test_get_total_gain(self) -> None:
+        assert self.oc.get_total_gain() == pytest.approx(-60000)
+
     def test_get_total_amount(self) -> None:
         assert self.oc.get_total_amount() == pytest.approx(2.0)
 
@@ -116,12 +119,13 @@ class TestCaseOrderCollection(unittest.TestCase):
 
     def test_get_report(self) -> None:
         s = "========== Order Collection Report ==========\n"
-        s += f"Number of orders = 2\n"
+        s += f"# of orders   = 2\n"
         s += f"Average Price = 30000.0\n"
-        s += f"Total Value = 60000.0\n"
+        s += f"Total Value   = 60000.0\n"
+        s += f"Total Gain    = -60000.0\n"
         assert self.oc.get_report() == s
 
-    def test_len(self) -> None:
+    def test___len__(self) -> None:
         assert len(self.oc) == 2
 
     def test_iter(self) -> None:
