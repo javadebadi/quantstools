@@ -201,12 +201,35 @@ class OrderCollection:
         return sum(order.get_numeric_amount(signed=True) for order in self._orders)
 
     def get_avg_price(self) -> float:
+        """Returns average price of orders in collection.
+        
+        The method calculates the average price of the orders in collection
+        weighted by the amount of each order.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+            : float
+            Average price of orders. If the collection is empty returns None.
+            In addition, if the total amounts is 0 again the average price of
+            None will be returned.
+        
+        """
         if not self._orders:
             return None
+        total_amounts = self.get_total_amount()
+        if total_amounts == 0:
+            return None
         else:
-            price = self._orders[0].price
-            p = self.get_total_value()/self.get_total_amount()
-        return float(Price(p, price.digits, price.precision).get_price())
+            p = self.get_total_value() / total_amounts
+        return Price(
+            p,
+            self.symbol.digits,
+            self.symbol.precision,
+            ).get_numeric_price()
 
     def get_orders_list_of_dict(self, numeric=False) -> List[dict]:
         """Returns list of orders dictionaries

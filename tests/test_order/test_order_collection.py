@@ -12,10 +12,10 @@ from quantstools.order import (
 class TestOrderCollection(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.symbol = Symbol('ETH-BTC', 5, 4, 4, 2)
+        self.symbol = Symbol('ETH-BTC', 7, 4, 4, 2)
 
     def test_order_collection___init__(self):
-        symbol = Symbol('ETH-BTC', 5, 4, 4, 2)
+        symbol = Symbol('ETH-BTC', 7, 4, 4, 2)
         oc = OrderCollection(symbol)
         assert oc.symbol == symbol
         assert oc._orders == []
@@ -28,18 +28,18 @@ class TestOrderCollection(unittest.TestCase):
 
     def test_add_order(self) -> None:
         oc = OrderCollection(self.symbol)
-        o = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o = Order(self.symbol, 'BUY', Price(15, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
         oc.add_order(o)
         assert len(oc._orders) == 1
         assert oc.orders[0] == o
-        o = Order(self.symbol, 'SELL', Price(0.016, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o = Order(self.symbol, 'SELL', Price(16, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
         oc.add_order(o)
         assert len(oc._orders) == 2
         assert oc.orders[1] == o
 
     def test_add_order_raises_type_error(self):
         oc = OrderCollection(self.symbol)
-        o = Order(Symbol('ETH-BTC', 12, 4, 12, 6), 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o = Order(Symbol('ETH-BTC', 12, 4, 12, 6), 'BUY', Price(15.0, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
         message = "Expecd order of type 'Order' but got of type 'int'"
         with pytest.raises(TypeError) as exc_info:
             oc.add_order(12)
@@ -47,7 +47,7 @@ class TestOrderCollection(unittest.TestCase):
 
     def test_add_order_raises_value_error(self):
         oc = OrderCollection(self.symbol)
-        o = Order(Symbol('BTC-USDT', 12, 4, 12, 6), 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o = Order(Symbol('BTC-USDT', 12, 4, 12, 6), 'BUY', Price(15.0, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
         message = "Expected the give order's symbol to be 'ETH-BTC' but got an order with symbol = 'BTC-USDT'"
         with pytest.raises(ValueError) as exc_info:
             oc.add_order(o)
@@ -55,7 +55,7 @@ class TestOrderCollection(unittest.TestCase):
 
     def test_reset(self):
         oc = OrderCollection(self.symbol)
-        o = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o = Order(self.symbol, 'BUY', Price(15.0, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
         oc.add_order(o)
         assert len(oc._orders) == 1
         oc.reset()
@@ -64,8 +64,8 @@ class TestOrderCollection(unittest.TestCase):
 
     def test_pop_first(self):
         oc = OrderCollection(self.symbol)
-        o1 = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
-        o2 = Order(self.symbol, 'SELL', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o1 = Order(self.symbol, 'BUY', Price(15.0, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o2 = Order(self.symbol, 'SELL', Price(15.0, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
         oc.add_order(o1)
         oc.add_order(o2)
         assert len(oc.orders) == 2
@@ -77,7 +77,13 @@ class TestOrderCollection(unittest.TestCase):
 
     def test_pop_last(self) -> None:
         oc = OrderCollection(self.symbol)
-        o = Order(self.symbol, 'BUY', Price(0.015, self.symbol.digits, self.symbol.precision) , Amount(0.15, self.symbol.amount_digits, self.symbol.amount_precision), 'LIMIT')
+        o = Order(
+            self.symbol,
+            'BUY',
+            Price(15.0, self.symbol.digits, self.symbol.precision),
+            Amount(15.0, self.symbol.amount_digits, self.symbol.amount_precision),
+            'LIMIT'
+            )
         oc.add_order(o)
         assert len(oc._orders) == 1
         assert oc.orders[0] == o
@@ -87,14 +93,81 @@ class TestOrderCollection(unittest.TestCase):
         order = oc.pop_last()
         assert order is None
 
+    def test_get_avg_price(self) -> None:
+        oc = OrderCollection(self.symbol)
+        o = Order(
+            self.symbol,
+            'BUY',
+            Price(15.0, self.symbol.digits, self.symbol.precision),
+            Amount(1.0, self.symbol.amount_digits, self.symbol.amount_precision),
+            'LIMIT'
+            )
+        oc.add_order(o)
+        assert oc.get_avg_price() == pytest.approx(15)
+        o = Order(
+            self.symbol,
+            'BUY',
+            Price(15.0, self.symbol.digits, self.symbol.precision),
+            Amount(1.0, self.symbol.amount_digits, self.symbol.amount_precision),
+            'LIMIT'
+            )
+        oc.add_order(o)
+        assert oc.get_avg_price() == pytest.approx(15)
+        o = Order(
+            self.symbol,
+            'SELL',
+            Price(20.0, self.symbol.digits, self.symbol.precision),
+            Amount(1.0, self.symbol.amount_digits, self.symbol.amount_precision),
+            'LIMIT'
+            )
+        oc.add_order(o)
+        assert oc.get_avg_price() == pytest.approx(10)
+        o = Order(
+            self.symbol,
+            'SELL',
+            Price(5.0, self.symbol.digits, self.symbol.precision),
+            Amount(0.5, self.symbol.amount_digits, self.symbol.amount_precision),
+            'LIMIT'
+            )
+        oc.add_order(o)
+        assert oc.get_avg_price() == pytest.approx(15)
+        o = Order(
+            self.symbol,
+            'SELL',
+            Price(0.0, self.symbol.digits, self.symbol.precision),
+            Amount(0.5, self.symbol.amount_digits, self.symbol.amount_precision),
+            'LIMIT'
+            )
+        oc.add_order(o)
+        assert oc.get_avg_price() is None
+        o = Order(
+            self.symbol,
+            'SELL',
+            Price(0.0, self.symbol.digits, self.symbol.precision),
+            Amount(0.5, self.symbol.amount_digits, self.symbol.amount_precision),
+            'LIMIT'
+            )
+        oc.add_order(o)
+        assert oc.get_avg_price() == pytest.approx(-15)
+
 
 class TestCaseOrderCollection(unittest.TestCase):
 
     def setUp(self) -> None:
         self.symbol = Symbol('BTC-USDT', 8, 2, 3, 1)
         self.oc = OrderCollection(self.symbol)
-        o1 = Order(self.symbol, 'BUY', Price(40000, self.symbol.digits, self.symbol.precision), Amount(1.0,  self.symbol.amount_digits, self.symbol.amount_precision))
-        o2 = Order(self.symbol, 'BUY', Price(20000, self.symbol.digits, self.symbol.precision), Amount(1.0,  self.symbol.amount_digits, self.symbol.amount_precision))
+        o1 = Order(
+            self.symbol,
+            'BUY',
+            Price(40000, self.symbol.digits, self.symbol.precision),
+            Amount(1.0,  self.symbol.amount_digits, self.symbol.amount_precision)
+            )
+        o2 = Order(
+            self.symbol,
+            'BUY',
+            Price(20000, self.symbol.digits, self.symbol.precision),
+            Amount(1.0,  self.symbol.amount_digits, self.symbol.amount_precision)
+            )
         self.oc.add_order(o1)
         self.oc.add_order(o2)
 
