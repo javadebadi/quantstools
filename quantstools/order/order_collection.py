@@ -198,6 +198,16 @@ class OrderCollection:
         return -1 * self.get_total_value()
 
     def get_total_amount(self) -> float:
+        """Returns the total amount of orders.
+
+        It returns the total signed amount of the orders. It means that if
+        sum of SELL amounts is bigger than sum of BUY amounts then this 
+        method will return a negative number.
+
+        Returns
+        -------
+            : float 
+        """
         return sum(order.get_numeric_amount(signed=True) for order in self._orders)
 
     def get_avg_price(self) -> float:
@@ -206,9 +216,6 @@ class OrderCollection:
         The method calculates the average price of the orders in collection
         weighted by the amount of each order.
 
-        Parameters
-        ----------
-        None
 
         Returns
         -------
@@ -258,9 +265,6 @@ class OrderCollection:
 
         It returns a summary of the collection status.
 
-        Parameters
-        ----------
-        None
 
         Returns
         -------
@@ -278,9 +282,6 @@ class OrderCollection:
     def __len__(self) -> int:
         """Returns number of orders in the collection
 
-        Parameters
-        ----------
-        None
 
         Returns
         -------
